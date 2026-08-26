@@ -1,0 +1,661 @@
+/* ==========================================================================
+   GeekVS - Higher or Lower: Power Levels Stylesheet
+   Theme: Modern Dark Anime/Cyber Geek Aesthetic
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --bg-primary: #07090e;
+  --bg-surface: rgba(18, 24, 38, 0.75);
+  --bg-card-overlay: linear-gradient(180deg, rgba(7, 9, 14, 0.4) 0%, rgba(7, 9, 14, 0.85) 100%);
+  
+  --accent-cyan: #00f3ff;
+  --accent-magenta: #ff0055;
+  --accent-yellow: #ffc800;
+  
+  --btn-higher-base: #00e676;
+  --btn-higher-hover: #00ff88;
+  --btn-higher-glow: rgba(0, 230, 118, 0.45);
+  
+  --btn-lower-base: #ff1744;
+  --btn-lower-hover: #ff3d71;
+  --btn-lower-glow: rgba(255, 23, 68, 0.45);
+
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Typography */
+  --font-display: 'Orbitron', -apple-system, sans-serif;
+  --font-body: 'Outfit', -apple-system, sans-serif;
+
+  /* Transitions & Shadows */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --glow-cyan: 0 0 25px rgba(0, 243, 255, 0.4);
+  --glow-magenta: 0 0 25px rgba(255, 0, 85, 0.5);
+  --box-shadow-card: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  user-select: none;
+}
+
+/* ==========================================================================
+   Header Bar
+   ========================================================================== */
+.game-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  background: linear-gradient(180deg, rgba(7, 9, 14, 0.95) 0%, rgba(7, 9, 14, 0) 100%);
+  pointer-events: none;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+}
+
+.logo-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+}
+
+.logo-title .highlight {
+  color: var(--accent-magenta);
+  text-shadow: 0 0 15px var(--accent-magenta);
+}
+
+.logo-subtitle {
+  font-family: var(--font-display);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+}
+
+.scoreboard {
+  display: flex;
+  gap: 1rem;
+  pointer-events: auto;
+}
+
+.score-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 1.1rem;
+  background: rgba(18, 24, 38, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.score-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.score-val {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent-cyan);
+  min-width: 1.5rem;
+  text-align: right;
+}
+
+.high-score-box .score-val {
+  color: var(--accent-yellow);
+}
+
+/* ==========================================================================
+   Game Arena (Cards 50/50 Split)
+   ========================================================================== */
+.game-arena {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.character-card {
+  position: relative;
+  flex: 1 1 50%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2.5rem 3rem;
+  box-shadow: var(--box-shadow-card);
+  transition: transform var(--transition-smooth);
+}
+
+.card-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.6s ease;
+  z-index: 1;
+}
+
+.character-card:hover .card-bg {
+  transform: scale(1.03);
+}
+
+.card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-card-overlay);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.card-reference {
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-guess {
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Content within Cards */
+.card-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.card-tag {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  border-radius: 4px;
+  background: rgba(0, 243, 255, 0.15);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 243, 255, 0.4);
+}
+
+.tag-target {
+  background: rgba(255, 0, 85, 0.15);
+  color: var(--accent-magenta);
+  border-color: rgba(255, 0, 85, 0.4);
+}
+
+.character-name {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 0.35rem;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+}
+
+.character-origin {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.guess-prompt {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.5px;
+}
+
+/* Power Display Box */
+.power-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 2.25rem;
+  background: rgba(10, 14, 23, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.power-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.power-number {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--accent-yellow);
+  line-height: 1;
+  text-shadow: 0 0 25px rgba(255, 200, 0, 0.4);
+  margin-bottom: 0.25rem;
+}
+
+.power-unit {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Central VS Badge
+   ========================================================================== */
+.vs-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #0f131d;
+  border: 3px solid var(--accent-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glow-cyan), 0 10px 30px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  animation: pulseVS 3s infinite alternate;
+}
+
+.vs-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 243, 255, 0.35) 0%, transparent 70%);
+}
+
+.vs-text {
+  position: relative;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 900;
+  font-style: italic;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+/* ==========================================================================
+   Action Buttons (Higher / Lower)
+   ========================================================================== */
+.guess-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.btn-action {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon {
+  font-size: 1rem;
+  transition: transform var(--transition-fast);
+}
+
+/* Higher Button */
+.btn-higher {
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.15) 0%, rgba(0, 230, 118, 0.3) 100%);
+  border-color: var(--btn-higher-base);
+  box-shadow: 0 6px 20px var(--btn-higher-glow);
+}
+
+.btn-higher:hover {
+  background: var(--btn-higher-hover);
+  color: #05140b;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px var(--btn-higher-glow);
+}
+
+.btn-higher:hover .btn-icon {
+  transform: translateY(-2px);
+}
+
+/* Lower Button */
+.btn-lower {
+  background: linear-gradient(135deg, rgba(255, 23, 68, 0.15) 0%, rgba(255, 23, 68, 0.3) 100%);
+  border-color: var(--btn-lower-base);
+  box-shadow: 0 6px 20px var(--btn-lower-glow);
+}
+
+.btn-lower:hover {
+  background: var(--btn-lower-hover);
+  color: #1a0408;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 30px var(--btn-lower-glow);
+}
+
+.btn-lower:hover .btn-icon {
+  transform: translateY(2px);
+}
+
+.btn-action:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ==========================================================================
+   Game Over Modal
+   ========================================================================== */
+.game-over-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 6, 10, 0.85);
+  backdrop-filter: blur(14px);
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.game-over-dialog {
+  width: 100%;
+  max-width: 440px;
+  background: #0d121c;
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: var(--glow-magenta), 0 25px 50px rgba(0, 0, 0, 0.8);
+  animation: scaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.game-over-icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.game-over-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent-magenta);
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+}
+
+.game-over-message {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.modal-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.modal-stat-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.modal-stat-item.highlight-record {
+  border-color: rgba(255, 200, 0, 0.3);
+  background: rgba(255, 200, 0, 0.06);
+}
+
+.modal-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.modal-stat-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.highlight-record .modal-stat-value {
+  color: var(--accent-yellow);
+}
+
+.btn-restart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.15rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, #00a2ff 100%);
+  color: #03141f;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: var(--glow-cyan);
+  transition: all var(--transition-fast);
+}
+
+.btn-restart:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.7);
+}
+
+.btn-restart:active {
+  transform: translateY(0);
+}
+
+.restart-icon {
+  font-size: 1.25rem;
+}
+
+/* ==========================================================================
+   Utility Classes & Keyframes
+   ========================================================================== */
+.hidden {
+  display: none !important;
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulseVS {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 0 35px rgba(0, 243, 255, 0.8);
+  }
+}
+
+/* ==========================================================================
+   Responsive Design (Mobile Breakpoint)
+   ========================================================================== */
+@media (max-width: 868px) {
+  html, body {
+    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .game-header {
+    position: sticky;
+    padding: 0 1rem;
+    height: 64px;
+    background: rgba(7, 9, 14, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .logo-title {
+    font-size: 1.35rem;
+  }
+
+  .game-arena {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 64px);
+  }
+
+  .character-card {
+    flex: none;
+    width: 100%;
+    min-height: 48vh;
+    padding: 3rem 1.5rem;
+  }
+
+  .card-reference {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .card-guess {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .character-name {
+    font-size: 1.85rem;
+  }
+
+  .power-number {
+    font-size: 2.75rem;
+  }
+
+  .vs-badge {
+    width: 56px;
+    height: 56px;
+  }
+
+  .vs-text {
+    font-size: 1.1rem;
+  }
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GeekVS - Juego interactivo de Higher or Lower basado en niveles de poder ficticios de anime y cómics.">
+  <title>GeekVS - Higher or Lower: Power Levels</title>
+  
+  <!-- Google Fonts: Orbitron & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="game-header">
+    <div class="brand">
+      <h1 class="logo-title">GEEK<span class="highlight">VS</span></h1>
+      <span class="logo-subtitle">POWER LEVEL EDITION</span>
+    </div>
+    
+    <div class="scoreboard">
+      <div class="score-pill current-streak-box">
+        <span class="score-label">Racha actual</span>
+        <span id="current-streak" class="score-val">0</span>
+      </div>
+      <div class="score-pill high-score-box">
+        <span class="score-label">Récord</span>
+        <span id="high-score" class="score-val">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Arena -->
+  <main class="game-arena" id="game-arena">
+    <!-- Tarjeta A (Izquierda / Referencia) -->
+    <section class="character-card card-reference" id="card-a">
+      <div class="card-bg" id="card-a-bg"></div>
+      <div class="card-overlay"></div>
+      
+      <div class="card-content">
+        <span class="card-tag">REFERENCIA</span>
+        <h2 class="character-name" id="card-a-name">---</h2>
+        <p class="character-origin" id="card-a-origin">---</p>
+        
+        <div class="power-display">
+          <span class="power-label">Nivel de Amenaza</span>
+          <div class="power-number" id="card-a-power">0</div>
+          <span class="power-unit">Puntos de Poder</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Insignia Central VS -->
+    <div class="vs-badge" id="vs-badge">
+      <div class="vs-glow"></div>
+      <span class="vs-text">VS</span>
+    </div>
+
+    <!-- Tarjeta B (Derecha / Adivinanza) -->
+    <section class="character-card card-guess" id="card-b">
+      <div class="card-bg" id="card-b-bg"></div>
+      <div class="card-overlay"></div>
+      
+      <div class="card-content">
+        <span class="card-tag tag-target">DESAFÍO</span>
+        <h2 class="character-name" id="card-b-name">---</h2>
+        <p class="character-origin" id="card-b-origin">---</p>
+        
+        <p class="guess-prompt">¿Tiene un nivel de poder...</p>
+        
+        <!-- Controles de Adivinanza -->
+        <div class="guess-controls" id="guess-controls">
+          <button id="btn-higher" class="btn-action btn-higher" aria-label="Mayor nivel de poder">
+            <span class="btn-icon">▲</span>
+            <span class="btn-text">MAYOR (HIGHER)</span>
+          </button>
+          
+          <button id="btn-lower" class="btn-action btn-lower" aria-label="Menor nivel de poder">
+            <span class="btn-icon">▼</span>
+            <span class="btn-text">MENOR (LOWER)</span>
+          </button>
+        </div>
+
+        <!-- Contenedor de Puntaje Revelado (Oculto inicialmente) -->
+        <div class="power-display hidden" id="card-b-power-container">
+          <span class="power-label">Nivel de Amenaza</span>
+          <div class="power-number" id="card-b-power">0</div>
+          <span class="power-unit">Puntos de Poder</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal / Overlay de Game Over -->
+  <div class="game-over-overlay hidden" id="game-over-modal" role="dialog" aria-modal="true" aria-labelledby="game-over-title">
+    <div class="game-over-dialog">
+      <div class="game-over-icon">💥</div>
+      <h2 id="game-over-title" class="game-over-title">¡FIN DEL JUEGO!</h2>
+      <p class="game-over-message">Has calculado mal el diferencial de combate.</p>
+      
+      <div class="modal-stats">
+        <div class="modal-stat-item">
+          <span class="modal-stat-label">Racha Final</span>
+          <span class="modal-stat-value" id="final-streak">0</span>
+        </div>
+        <div class="modal-stat-item highlight-record">
+          <span class="modal-stat-label">Mejor Récord</span>
+          <span class="modal-stat-value" id="modal-high-score">0</span>
+        </div>
+      </div>
+      
+      <button id="btn-restart" class="btn-restart">
+        <span class="restart-icon">↻</span>
+        <span>JUGAR DE NUEVO</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Script principal del juego -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

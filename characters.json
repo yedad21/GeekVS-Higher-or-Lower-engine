@@ -1,0 +1,56 @@
+[
+  {
+    "id": "goku_saiyan",
+    "nombre": "Son Goku (Saga Saiyajin)",
+    "obra": "Dragon Ball Z",
+    "bajas_directas": 12,
+    "bono_hazana": 8000,
+    "derrotados": ["raditz", "nappa"],
+    "imagen": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "vegeta_saiyan",
+    "nombre": "Vegeta (Saga Saiyajin)",
+    "obra": "Dragon Ball Z",
+    "bajas_directas": 50,
+    "bono_hazana": 18000,
+    "derrotados": ["goku_saiyan", "nappa"],
+    "imagen": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "nappa",
+    "nombre": "Nappa",
+    "obra": "Dragon Ball Z",
+    "bajas_directas": 6,
+    "bono_hazana": 4000,
+    "derrotados": ["yamcha", "tenshinhan", "chaoz"],
+    "imagen": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "raditz",
+    "nombre": "Raditz",
+    "obra": "Dragon Ball Z",
+    "bajas_directas": 3,
+    "bono_hazana": 1500,
+    "derrotados": ["farmer_with_shotgun"],
+    "imagen": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "tenshinhan",
+    "nombre": "Tenshinhan",
+    "obra": "Dragon Ball",
+    "bajas_directas": 15,
+    "bono_hazana": 1830,
+    "derrotados": ["yamcha"],
+    "imagen": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    "id": "yamcha",
+    "nombre": "Yamcha",
+    "obra": "Dragon Ball",
+    "bajas_directas": 4,
+    "bono_hazana": 1480,
+    "derrotados": [],
+    "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+  }
+]
