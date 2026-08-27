@@ -4,7 +4,7 @@
  * Cosmic Tier List, Pick a Fight 1v1, Buscador Global y Panel "Mis Estadísticas".
  * 
  * Incorpora:
- * 1. Microinteracción Hover con Rotación de GIFs (Image Hover Preview con precarga en memoria)
+ * 1. Fondos estáticos en HD por defecto + Rotación de GIFs exclusiva en Hover con fallback anti-errores
  * 2. Motor de Audio Sintético Nativo Web Audio API (soundEngine.js)
  * 3. Generador de Tarjetas de Duelo 1200x630 con Canvas (canvasShare.js)
  */
@@ -39,6 +39,10 @@ const ALPHABET_LETTERS = ['ALL', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J
 let catalogo = [];
 let mapaCatalogo = new Map();
 const imagenesPrecargadas = new Set();
+
+// Intervalos de hover para las tarjetas del juego principal
+let cardAHoverInterval = null;
+let cardBHoverInterval = null;
 
 // 3. Mapeo de elementos del DOM
 const dom = {
@@ -83,12 +87,14 @@ const dom = {
   btnClearStats: document.getElementById('btn-clear-stats'),
 
   // Vista 1: Higher or Lower
+  cardA: document.getElementById('card-a'),
   cardAName: document.getElementById('card-a-name'),
   cardAOrigin: document.getElementById('card-a-origin'),
   cardAPower: document.getElementById('card-a-power'),
   cardABg: document.getElementById('card-a-bg'),
   btnBreakdownA: document.getElementById('btn-breakdown-a'),
 
+  cardB: document.getElementById('card-b'),
   cardBName: document.getElementById('card-b-name'),
   cardBOrigin: document.getElementById('card-b-origin'),
   cardBPower: document.getElementById('card-b-power'),
@@ -125,6 +131,7 @@ const dom = {
   tierlistRowsWrapper: document.getElementById('tierlist-rows-wrapper'),
 
   // Vista 5: Pick a Fight (1v1)
+  slotP1: document.getElementById('slot-p1'),
   slotP1Empty: document.getElementById('slot-p1-empty'),
   slotP1Selected: document.getElementById('slot-p1-selected'),
   slotP1Bg: document.getElementById('slot-p1-bg'),
@@ -135,6 +142,7 @@ const dom = {
   btnChangeP1: document.getElementById('btn-change-p1'),
   btnBreakdownP1: document.getElementById('btn-breakdown-p1'),
 
+  slotP2: document.getElementById('slot-p2'),
   slotP2Empty: document.getElementById('slot-p2-empty'),
   slotP2Selected: document.getElementById('slot-p2-selected'),
   slotP2Bg: document.getElementById('slot-p2-bg'),
@@ -256,7 +264,36 @@ function precargarRecursosCatalogo() {
 }
 
 /**
- * Gestor de Microinteracción Hover con Rotación de GIFs (Image Hover Preview).
+ * Carga e impone SIEMPRE la imagen estática HD como fondo inicial por defecto.
+ * @param {HTMLElement} bgElement - Elemento que recibe el background.
+ * @param {Object} personaje - Datos del personaje.
+ */
+function establecerFondoEstatico(bgElement, personaje) {
+  if (!bgElement || !personaje) return;
+
+  const urlEstatica = personaje.imagen || (personaje.gif_collage || '');
+  if (!urlEstatica) return;
+
+  const imgPrecarga = new Image();
+  imgPrecarga.onload = () => {
+    bgElement.style.backgroundImage = `url('${urlEstatica}')`;
+    bgElement.classList.remove('loading');
+    bgElement.classList.remove('gif-cycling');
+  };
+  imgPrecarga.onerror = () => {
+    if (personaje.gif_collage && urlEstatica !== personaje.gif_collage) {
+      bgElement.style.backgroundImage = `url('${personaje.gif_collage}')`;
+    }
+    bgElement.classList.remove('loading');
+  };
+
+  bgElement.classList.add('loading');
+  imgPrecarga.src = urlEstatica;
+}
+
+/**
+ * Gestor de Microinteracción Hover con Rotación de GIFs para tarjetas de listas/grid.
+ * Imagen estática por defecto; los GIFs solo se activan al hacer hover con fallback seguro.
  * @param {HTMLElement} contenedor - Elemento que recibe los eventos mouseenter/mouseleave.
  * @param {HTMLElement} targetBg - Elemento visual cuyo backgroundImage será alternado.
  * @param {Object} personaje - Datos del personaje.
@@ -278,22 +315,29 @@ function aplicarHoverRotacionGifs(contenedor, targetBg, personaje) {
     currentIndex = 0;
     targetBg.classList.add('gif-cycling');
 
-    // Transición suave de opacidad al primer GIF
-    targetBg.style.opacity = '0.75';
-    setTimeout(() => {
-      targetBg.style.backgroundImage = `url('${gifList[0]}')`;
-      targetBg.style.opacity = '1';
-    }, 60);
+    const intentarCargarGif = (url) => {
+      const testImg = new Image();
+      testImg.onload = () => {
+        targetBg.style.opacity = '0.75';
+        setTimeout(() => {
+          targetBg.style.backgroundImage = `url('${url}')`;
+          targetBg.style.opacity = '1';
+        }, 50);
+      };
+      testImg.onerror = () => {
+        // Fallback garantizado a imagen estática sin mostrar mensajes de error
+        targetBg.style.backgroundImage = `url('${staticImg}')`;
+      };
+      testImg.src = url;
+    };
+
+    intentarCargarGif(gifList[0]);
 
     // Si hay más de un GIF, alternar cada 900ms
     if (gifList.length > 1) {
       intervalId = setInterval(() => {
         currentIndex = (currentIndex + 1) % gifList.length;
-        targetBg.style.opacity = '0.75';
-        setTimeout(() => {
-          targetBg.style.backgroundImage = `url('${gifList[currentIndex]}')`;
-          targetBg.style.opacity = '1';
-        }, 60);
+        intentarCargarGif(gifList[currentIndex]);
       }, 900);
     }
   });
@@ -308,8 +352,139 @@ function aplicarHoverRotacionGifs(contenedor, targetBg, personaje) {
     setTimeout(() => {
       targetBg.style.backgroundImage = `url('${staticImg}')`;
       targetBg.style.opacity = '1';
-    }, 60);
+    }, 50);
   });
+}
+
+/**
+ * Configura los listeners exclusivos de hover para las tarjetas del juego principal (#card-a y #card-b).
+ */
+function configurarHoverTarjetasJuego() {
+  // Configuración para Tarjeta A
+  if (dom.cardA && dom.cardABg) {
+    dom.cardA.addEventListener('mouseenter', () => {
+      const personaje = state.characterA;
+      if (!personaje) return;
+
+      const gifList = (Array.isArray(personaje.gifs_hover) && personaje.gifs_hover.length > 0)
+        ? personaje.gifs_hover
+        : (personaje.gif_collage ? [personaje.gif_collage] : []);
+
+      if (gifList.length === 0) return;
+
+      let currentIndex = 0;
+      dom.cardABg.classList.add('gif-cycling');
+
+      const intentarCargarGifA = (url) => {
+        const testImg = new Image();
+        testImg.onload = () => {
+          dom.cardABg.style.opacity = '0.8';
+          setTimeout(() => {
+            dom.cardABg.style.backgroundImage = `url('${url}')`;
+            dom.cardABg.style.opacity = '1';
+          }, 50);
+        };
+        testImg.onerror = () => {
+          dom.cardABg.style.backgroundImage = `url('${personaje.imagen}')`;
+        };
+        testImg.src = url;
+      };
+
+      intentarCargarGifA(gifList[0]);
+
+      if (gifList.length > 1) {
+        cardAHoverInterval = setInterval(() => {
+          currentIndex = (currentIndex + 1) % gifList.length;
+          intentarCargarGifA(gifList[currentIndex]);
+        }, 900);
+      }
+    });
+
+    dom.cardA.addEventListener('mouseleave', () => {
+      if (cardAHoverInterval) {
+        clearInterval(cardAHoverInterval);
+        cardAHoverInterval = null;
+      }
+      dom.cardABg.classList.remove('gif-cycling');
+      if (state.characterA && state.characterA.imagen) {
+        dom.cardABg.style.opacity = '0.8';
+        setTimeout(() => {
+          dom.cardABg.style.backgroundImage = `url('${state.characterA.imagen}')`;
+          dom.cardABg.style.opacity = '1';
+        }, 50);
+      }
+    });
+  }
+
+  // Configuración para Tarjeta B
+  if (dom.cardB && dom.cardBBg) {
+    dom.cardB.addEventListener('mouseenter', () => {
+      const personaje = state.characterB;
+      if (!personaje) return;
+
+      const gifList = (Array.isArray(personaje.gifs_hover) && personaje.gifs_hover.length > 0)
+        ? personaje.gifs_hover
+        : (personaje.gif_collage ? [personaje.gif_collage] : []);
+
+      if (gifList.length === 0) return;
+
+      let currentIndex = 0;
+      dom.cardBBg.classList.add('gif-cycling');
+
+      const intentarCargarGifB = (url) => {
+        const testImg = new Image();
+        testImg.onload = () => {
+          dom.cardBBg.style.opacity = '0.8';
+          setTimeout(() => {
+            dom.cardBBg.style.backgroundImage = `url('${url}')`;
+            dom.cardBBg.style.opacity = '1';
+          }, 50);
+        };
+        testImg.onerror = () => {
+          dom.cardBBg.style.backgroundImage = `url('${personaje.imagen}')`;
+        };
+        testImg.src = url;
+      };
+
+      intentarCargarGifB(gifList[0]);
+
+      if (gifList.length > 1) {
+        cardBHoverInterval = setInterval(() => {
+          currentIndex = (currentIndex + 1) % gifList.length;
+          intentarCargarGifB(gifList[currentIndex]);
+        }, 900);
+      }
+    });
+
+    dom.cardB.addEventListener('mouseleave', () => {
+      if (cardBHoverInterval) {
+        clearInterval(cardBHoverInterval);
+        cardBHoverInterval = null;
+      }
+      dom.cardBBg.classList.remove('gif-cycling');
+      if (state.characterB && state.characterB.imagen) {
+        dom.cardBBg.style.opacity = '0.8';
+        setTimeout(() => {
+          dom.cardBBg.style.backgroundImage = `url('${state.characterB.imagen}')`;
+          dom.cardBBg.style.opacity = '1';
+        }, 50);
+      }
+    });
+  }
+}
+
+/**
+ * Detiene y resetea cualquier intervalo de rotación hover activo en las tarjetas del juego.
+ */
+function limpiarHoverTarjetasJuego() {
+  if (cardAHoverInterval) {
+    clearInterval(cardAHoverInterval);
+    cardAHoverInterval = null;
+  }
+  if (cardBHoverInterval) {
+    clearInterval(cardBHoverInterval);
+    cardBHoverInterval = null;
+  }
 }
 
 /**
@@ -373,31 +548,6 @@ function formatearPoder(numero) {
   return Number(numero || 0).toLocaleString('es-ES');
 }
 
-/**
- * Carga fluida de imagen o GIF de combate sin parpadeo.
- */
-function actualizarFondoFluido(bgElement, personaje) {
-  if (!bgElement || !personaje) return;
-
-  const urlRecurso = personaje.gif_collage || personaje.imagen;
-  if (!urlRecurso) return;
-
-  const imgPrecarga = new Image();
-  imgPrecarga.onload = () => {
-    bgElement.style.backgroundImage = `url('${urlRecurso}')`;
-    bgElement.classList.remove('loading');
-  };
-  imgPrecarga.onerror = () => {
-    if (personaje.imagen && urlRecurso !== personaje.imagen) {
-      bgElement.style.backgroundImage = `url('${personaje.imagen}')`;
-    }
-    bgElement.classList.remove('loading');
-  };
-
-  bgElement.classList.add('loading');
-  imgPrecarga.src = urlRecurso;
-}
-
 // =========================================================================
 // SISTEMA DE ESTADÍSTICAS DEL USUARIO (MY STATS)
 // =========================================================================
@@ -459,7 +609,7 @@ function actualizarDrawerEstadisticas() {
     dom.favCharName.textContent = favPersonaje.nombre;
     dom.favCharUniverse.textContent = favPersonaje.obra;
     dom.favCharViews.textContent = `${maxViews} inspecciones canónicas`;
-    dom.favCharAvatar.style.backgroundImage = `url('${favPersonaje.gif_collage || favPersonaje.imagen}')`;
+    dom.favCharAvatar.style.backgroundImage = `url('${favPersonaje.imagen || favPersonaje.gif_collage}')`;
   } else {
     dom.favCharName.textContent = 'Sin registros';
     dom.favCharUniverse.textContent = 'Consulta desgloses para registrar';
@@ -517,7 +667,7 @@ function ejecutarBusquedaGlobal(texto) {
       const item = document.createElement('div');
       item.className = 'global-search-item';
       item.innerHTML = `
-        <div class="global-item-avatar" style="background-image: url('${p.gif_collage || p.imagen}')"></div>
+        <div class="global-item-avatar" style="background-image: url('${p.imagen || p.gif_collage}')"></div>
         <div class="global-item-info">
           <span class="global-item-name">${p.nombre}</span>
           <span class="global-item-origin">${p.obra}</span>
@@ -541,23 +691,31 @@ function ejecutarBusquedaGlobal(texto) {
 }
 
 // =========================================================================
-// VISTA 1: HIGHER OR LOWER LOGIC
+// VISTA 1: HIGHER OR LOWER LOGIC (FONDO ESTÁTICO HD + HOVER EXCLUSIVO)
 // =========================================================================
 
 function renderizarTarjetaA() {
   if (!state.characterA) return;
+  limpiarHoverTarjetasJuego();
+
   dom.cardAName.textContent = state.characterA.nombre;
   dom.cardAOrigin.textContent = state.characterA.obra;
   dom.cardAPower.textContent = formatearPoder(state.characterA.scoreFinal);
-  actualizarFondoFluido(dom.cardABg, state.characterA);
+  
+  // Establece SIEMPRE la imagen estática en HD por defecto
+  establecerFondoEstatico(dom.cardABg, state.characterA);
 }
 
 function renderizarTarjetaB() {
   if (!state.characterB) return;
+  limpiarHoverTarjetasJuego();
+
   dom.cardBName.textContent = state.characterB.nombre;
   dom.cardBOrigin.textContent = state.characterB.obra;
   dom.cardBPower.textContent = '0';
-  actualizarFondoFluido(dom.cardBBg, state.characterB);
+
+  // Establece SIEMPRE la imagen estática en HD por defecto
+  establecerFondoEstatico(dom.cardBBg, state.characterB);
 
   dom.guessControls.classList.remove('hidden');
   dom.cardBPowerContainer.classList.add('hidden');
@@ -1030,16 +1188,16 @@ function asignarPeleador(slot, personaje) {
     dom.slotP1Name.textContent = personaje.nombre;
     dom.slotP1Origin.textContent = personaje.obra;
     dom.slotP1Power.textContent = formatearPoder(personaje.scoreFinal);
-    actualizarFondoFluido(dom.slotP1Bg, personaje);
-    aplicarHoverRotacionGifs(dom.slotP1Selected, dom.slotP1Bg, personaje);
+    establecerFondoEstatico(dom.slotP1Bg, personaje);
+    aplicarHoverRotacionGifs(dom.slotP1, dom.slotP1Bg, personaje);
   } else if (slot === 'p2') {
     dom.slotP2Empty.classList.add('hidden');
     dom.slotP2Selected.classList.remove('hidden');
     dom.slotP2Name.textContent = personaje.nombre;
     dom.slotP2Origin.textContent = personaje.obra;
     dom.slotP2Power.textContent = formatearPoder(personaje.scoreFinal);
-    actualizarFondoFluido(dom.slotP2Bg, personaje);
-    aplicarHoverRotacionGifs(dom.slotP2Selected, dom.slotP2Bg, personaje);
+    establecerFondoEstatico(dom.slotP2Bg, personaje);
+    aplicarHoverRotacionGifs(dom.slotP2, dom.slotP2Bg, personaje);
   }
 
   dom.battleResultsPanel.classList.add('hidden');
@@ -1310,6 +1468,7 @@ async function inicializarApp() {
     mapaCatalogo = new Map(catalogo.map((p) => [p.id, p]));
     
     precargarRecursosCatalogo();
+    configurarHoverTarjetasJuego();
     actualizarEstadoAudioUI();
     poblarTodosLosFiltrosUniversos();
     inicializarBarraAlfabetica();
