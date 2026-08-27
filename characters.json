@@ -6,7 +6,11 @@
     "bajas_directas": 12,
     "bono_hazana": 8000,
     "derrotados": ["raditz", "nappa"],
-    "imagen": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80"
+    "imagen": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/GRSnxyhJnPsaQ/giphy.gif",
+    "hazana_descripcion": "Multiplicó su poder con el Kaiō-ken x4 y repelió el Cañón Galick de Vegeta.",
+    "justificacion_canonica": "Su poder base fue forjado en el entrenamiento bajo gravedad x10 con Kaiō-sama. Al dominar el Kaiō-ken x4 y canalizar la energía residual de la derrota de invasores saiyajin de élite como Raditz y Nappa, alcanza un nivel de amenaza devastador capaz de salvar la Tierra.",
+    "habilidades": ["Kaiō-ken x4", "Kamehameha", "Genkidama", "Taiyōken"]
   },
   {
     "id": "vegeta_saiyan",
@@ -15,7 +19,11 @@
     "bajas_directas": 50,
     "bono_hazana": 18000,
     "derrotados": ["goku_saiyan", "nappa"],
-    "imagen": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80"
+    "imagen": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/qXJq82485U556/giphy.gif",
+    "hazana_descripcion": "Destruyó planetas enteros en su conquista y desató la colosal forma Ōzaru.",
+    "justificacion_canonica": "Príncipe de los Saiyajin con instinto genocida nato. Su score canónico refleja una carrera militar implacable conquistando planetas para Freezer, sumado a la absorción del diferencial de combate de sus subordinados y su aplastante dominación en combate terrestre.",
+    "habilidades": ["Galick Gun", "Transformación Ōzaru", "Luces de la Muerte", "Explosión Ki"]
   },
   {
     "id": "nappa",
@@ -24,7 +32,11 @@
     "bajas_directas": 6,
     "bono_hazana": 4000,
     "derrotados": ["yamcha", "tenshinhan", "chaoz"],
-    "imagen": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80"
+    "imagen": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/bDWdJRY2IZCX6/giphy.gif",
+    "hazana_descripcion": "Arrasó con la vanguardia de los Guerreros Z sin sufrir daño crítico.",
+    "justificacion_canonica": "General de choque saiyajin de complexión titánica. Su puntaje calcula la aniquilación sistemática de múltiples defensores de élite terrestres y el coeficiente de conquista saiyajin acumulado por décadas de asaltos planetarios.",
+    "habilidades": ["Bombardero Volcánico", "Rompedor de Brazos", "Onda Explosiva", "Rayo Bucal Gigante"]
   },
   {
     "id": "raditz",
@@ -33,7 +45,11 @@
     "bajas_directas": 3,
     "bono_hazana": 1500,
     "derrotados": ["farmer_with_shotgun"],
-    "imagen": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80"
+    "imagen": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/vnoZnuh4mM2sM/giphy.gif",
+    "hazana_descripcion": "Humilló en combate simultáneo a Goku y Piccolo con facilidad abrumadora.",
+    "justificacion_canonica": "Vanguardia de reconocimiento saiyajin con rastreador táctico. Su score sintetiza su superioridad bélica extraterrestre sobre la raza humana, la velocidad sónica de evasión y la letalidad de sus ráfagas dobles de energía.",
+    "habilidades": ["Double Sunday", "Saturday Crush", "Vuelo Supersónico", "Cola Prensil Táctica"]
   },
   {
     "id": "tenshinhan",
@@ -42,7 +58,11 @@
     "bajas_directas": 15,
     "bono_hazana": 1830,
     "derrotados": ["yamcha"],
-    "imagen": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=800&q=80"
+    "imagen": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/13fTar4VWAuqhG/giphy.gif",
+    "hazana_descripcion": "Campeón del 22° Torneo de Artes Marciales y creador del destructivo Kikoho.",
+    "justificacion_canonica": "Maestro prodigio de la Escuela Grulla. Su puntuación contempla la maestría marcial mística, victorias competitivas frente a los mayores guerreros del mundo y la capacidad de concentrar su fuerza vital en impactos que superan los límites biológicos.",
+    "habilidades": ["Kikoho (Tri-Beam)", "Dōshin no Jutsu (Multi-brazo)", "Taiyōken", "Dodonpa"]
   },
   {
     "id": "yamcha",
@@ -51,6 +71,10 @@
     "bajas_directas": 4,
     "bono_hazana": 1480,
     "derrotados": [],
-    "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+    "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/UEwgbxjsG3xC0/giphy.gif",
+    "hazana_descripcion": "Bandido legendario del desierto y semifinalista en múltiples torneos mundiales.",
+    "justificacion_canonica": "Guerrero marcial versátil y creador de técnicas de ki guiado. Su score refleja su entrenamiento riguroso bajo la tutela del Maestro Roshi y su dominio del ataque espiritual del lobo salvaje.",
+    "habilidades": ["Rōgafūfūken (Golpe del Lobo)", "Sōkidan (Bola de Ki Teledirigida)", "Kamehameha", "Estilo Colmillo Veloz"]
   }
 ]

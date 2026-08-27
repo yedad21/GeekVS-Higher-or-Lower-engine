@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GeekVS - Juego interactivo de Higher or Lower basado en niveles de poder ficticios de anime y cómics.">
-  <title>GeekVS - Higher or Lower: Power Levels</title>
+  <meta name="description" content="GeekVS - Juego interactivo de Higher or Lower basado en niveles de poder ficticios de anime y cómics con cálculo de poder transitivo y justificación canónica.">
+  <title>GeekVS - Higher or Lower: Power Levels & Canonical Breakdown</title>
   
   <!-- Google Fonts: Orbitron & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
@@ -19,7 +19,7 @@
   <header class="game-header">
     <div class="brand">
       <h1 class="logo-title">GEEK<span class="highlight">VS</span></h1>
-      <span class="logo-subtitle">POWER LEVEL EDITION</span>
+      <span class="logo-subtitle">POWER LEVEL & COMBAT ARCHIVE</span>
     </div>
     
     <div class="scoreboard">
@@ -38,11 +38,21 @@
   <main class="game-arena" id="game-arena">
     <!-- Tarjeta A (Izquierda / Referencia) -->
     <section class="character-card card-reference" id="card-a">
-      <div class="card-bg" id="card-a-bg"></div>
-      <div class="card-overlay"></div>
+      <div class="card-bg-container">
+        <div class="card-bg" id="card-a-bg"></div>
+        <div class="card-overlay"></div>
+        <div class="card-scanline"></div>
+      </div>
       
       <div class="card-content">
-        <span class="card-tag">REFERENCIA</span>
+        <div class="card-header-meta">
+          <span class="card-tag">REFERENCIA</span>
+          <button id="btn-breakdown-a" class="btn-breakdown" aria-label="Ver Desglose Canónico de Tarjeta A">
+            <span class="btn-breakdown-icon">ℹ️</span>
+            <span class="btn-breakdown-text">Desglose Canónico</span>
+          </button>
+        </div>
+
         <h2 class="character-name" id="card-a-name">---</h2>
         <p class="character-origin" id="card-a-origin">---</p>
         
@@ -62,15 +72,25 @@
 
     <!-- Tarjeta B (Derecha / Adivinanza) -->
     <section class="character-card card-guess" id="card-b">
-      <div class="card-bg" id="card-b-bg"></div>
-      <div class="card-overlay"></div>
+      <div class="card-bg-container">
+        <div class="card-bg" id="card-b-bg"></div>
+        <div class="card-overlay"></div>
+        <div class="card-scanline"></div>
+      </div>
       
       <div class="card-content">
-        <span class="card-tag tag-target">DESAFÍO</span>
+        <div class="card-header-meta">
+          <span class="card-tag tag-target">DESAFÍO</span>
+          <button id="btn-breakdown-b" class="btn-breakdown hidden" aria-label="Ver Desglose Canónico de Tarjeta B">
+            <span class="btn-breakdown-icon">ℹ️</span>
+            <span class="btn-breakdown-text">Desglose Canónico</span>
+          </button>
+        </div>
+
         <h2 class="character-name" id="card-b-name">---</h2>
         <p class="character-origin" id="card-b-origin">---</p>
         
-        <p class="guess-prompt">¿Tiene un nivel de poder...</p>
+        <p class="guess-prompt" id="guess-prompt-text">¿Tiene un nivel de poder...</p>
         
         <!-- Controles de Adivinanza -->
         <div class="guess-controls" id="guess-controls">
@@ -94,6 +114,115 @@
       </div>
     </section>
   </main>
+
+  <!-- Modal Desglose Canónico (Cyber-Anime UI) -->
+  <div class="modal-cyber-overlay hidden" id="modal-breakdown" role="dialog" aria-modal="true" aria-labelledby="modal-char-name">
+    <div class="modal-cyber-dialog">
+      <!-- Glow ambient background -->
+      <div class="modal-ambient-glow"></div>
+
+      <!-- Close Button -->
+      <button id="btn-close-modal" class="btn-modal-close" aria-label="Cerrar modal de desglose">✕</button>
+
+      <!-- Modal Header -->
+      <header class="modal-cyber-header">
+        <div class="modal-badge-group">
+          <span class="modal-system-tag">REGISTRO DE PODER CANÓNICO</span>
+          <span class="modal-status-pill">VERIFICADO O(1)</span>
+        </div>
+        <h2 id="modal-char-name" class="modal-char-title">Personaje</h2>
+        <p id="modal-char-origin" class="modal-char-subtitle">Obra / Universo</p>
+        
+        <div class="modal-feat-highlight">
+          <span class="feat-icon">⚡</span>
+          <p id="modal-char-feat" class="feat-text">Hazaña principal...</p>
+        </div>
+      </header>
+
+      <!-- Mathematical Breakdown Grid -->
+      <section class="modal-section">
+        <h3 class="section-title">
+          <span class="title-decor"></span>
+          DESGLOSE MATEMÁTICO DEL SCORE
+        </h3>
+
+        <div class="breakdown-grid">
+          <!-- Bajas Directas -->
+          <div class="breakdown-card">
+            <div class="breakdown-card-header">
+              <span class="card-icon">⚔️</span>
+              <span class="card-label">Bajas Directas</span>
+            </div>
+            <div class="breakdown-card-val" id="modal-stat-kills">0</div>
+            <div class="breakdown-card-sub">Enemigos confirmados</div>
+          </div>
+
+          <!-- Puntos de Hazaña -->
+          <div class="breakdown-card">
+            <div class="breakdown-card-header">
+              <span class="card-icon">🏆</span>
+              <span class="card-label">Puntos de Hazaña</span>
+            </div>
+            <div class="breakdown-card-val" id="modal-stat-feat-pts">0</div>
+            <div class="breakdown-card-sub">Bono de escala y hazaña</div>
+          </div>
+
+          <!-- Aporte Heredado de Rivales -->
+          <div class="breakdown-card card-inherited">
+            <div class="breakdown-card-header">
+              <span class="card-icon">🧬</span>
+              <span class="card-label">Aporte Rivales (50% Trans.)</span>
+            </div>
+            <div class="breakdown-card-val" id="modal-stat-rivals">0</div>
+            <div class="breakdown-card-sub" id="modal-rivals-summary">Herencia de combate</div>
+          </div>
+
+          <!-- Score Final Calculado -->
+          <div class="breakdown-card card-total">
+            <div class="breakdown-card-header">
+              <span class="card-icon">💥</span>
+              <span class="card-label">Poder Total Final</span>
+            </div>
+            <div class="breakdown-card-val total-glow" id="modal-stat-total">0</div>
+            <div class="breakdown-card-sub">Fórmula: Base + ∑(Rivales × 0.5)</div>
+          </div>
+        </div>
+
+        <!-- Rivales Detallados List -->
+        <div class="rivals-detailed-box" id="modal-rivals-box">
+          <span class="rivals-box-title">Rivales Subyugados en Cadena:</span>
+          <div class="rivals-tags-container" id="modal-rivals-list"></div>
+        </div>
+      </section>
+
+      <!-- Canonical Techniques Section (Pills) -->
+      <section class="modal-section">
+        <h3 class="section-title">
+          <span class="title-decor"></span>
+          TÉCNICAS & HABILIDADES CLAVE
+        </h3>
+        <div class="techniques-container" id="modal-techniques-list">
+          <!-- Dynamic Pills will be injected here -->
+        </div>
+      </section>
+
+      <!-- Narrative Justification -->
+      <section class="modal-section">
+        <h3 class="section-title">
+          <span class="title-decor"></span>
+          JUSTIFICACIÓN CANÓNICA
+        </h3>
+        <div class="narrative-box">
+          <p id="modal-char-narrative" class="narrative-text">Explicación narrativa...</p>
+        </div>
+      </section>
+
+      <!-- Modal Footer -->
+      <footer class="modal-cyber-footer">
+        <button id="btn-modal-accept" class="btn-modal-action">ENTENDIDO / VOLVER AL COMBATE</button>
+      </footer>
+    </div>
+  </div>
 
   <!-- Modal / Overlay de Game Over -->
   <div class="game-over-overlay hidden" id="game-over-modal" role="dialog" aria-modal="true" aria-labelledby="game-over-title">

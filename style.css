@@ -1,17 +1,22 @@
 /* ==========================================================================
    GeekVS - Higher or Lower: Power Levels Stylesheet
-   Theme: Modern Dark Anime/Cyber Geek Aesthetic
+   Theme: Cyber-Anime High-Tech Arena & Canonical Combat Archive
    ========================================================================== */
 
 :root {
   /* Color Palette */
-  --bg-primary: #07090e;
-  --bg-surface: rgba(18, 24, 38, 0.75);
-  --bg-card-overlay: linear-gradient(180deg, rgba(7, 9, 14, 0.4) 0%, rgba(7, 9, 14, 0.85) 100%);
+  --bg-primary: #06080d;
+  --bg-surface: rgba(14, 20, 32, 0.78);
+  --bg-card-overlay: linear-gradient(180deg, rgba(6, 8, 13, 0.55) 0%, rgba(6, 8, 13, 0.92) 100%);
+  --bg-modal: rgba(10, 15, 26, 0.95);
   
   --accent-cyan: #00f3ff;
+  --accent-cyan-glow: rgba(0, 243, 255, 0.45);
   --accent-magenta: #ff0055;
+  --accent-magenta-glow: rgba(255, 0, 85, 0.5);
   --accent-yellow: #ffc800;
+  --accent-yellow-glow: rgba(255, 200, 0, 0.4);
+  --accent-purple: #9d4edd;
   
   --btn-higher-base: #00e676;
   --btn-higher-hover: #00ff88;
@@ -34,7 +39,7 @@
   --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --glow-cyan: 0 0 25px rgba(0, 243, 255, 0.4);
   --glow-magenta: 0 0 25px rgba(255, 0, 85, 0.5);
-  --box-shadow-card: 0 20px 40px rgba(0, 0, 0, 0.6);
+  --box-shadow-card: 0 20px 50px rgba(0, 0, 0, 0.7);
 }
 
 /* Base Reset */
@@ -61,6 +66,19 @@ body {
   user-select: none;
 }
 
+/* Custom Scrollbar for Modals and Arena */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(8, 12, 20, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-cyan);
+  border-radius: 4px;
+}
+
 /* ==========================================================================
    Header Bar
    ========================================================================== */
@@ -75,7 +93,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  background: linear-gradient(180deg, rgba(7, 9, 14, 0.95) 0%, rgba(7, 9, 14, 0) 100%);
+  background: linear-gradient(180deg, rgba(6, 8, 13, 0.98) 0%, rgba(6, 8, 13, 0) 100%);
   pointer-events: none;
 }
 
@@ -119,8 +137,8 @@ body {
   align-items: center;
   gap: 0.75rem;
   padding: 0.45rem 1.1rem;
-  background: rgba(18, 24, 38, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(14, 20, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
@@ -171,6 +189,16 @@ body {
   transition: transform var(--transition-smooth);
 }
 
+.card-bg-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
 .card-bg {
   position: absolute;
   top: 0;
@@ -180,12 +208,14 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: transform 0.6s ease;
+  filter: saturate(1.15) contrast(1.08);
+  opacity: 1;
+  transition: opacity 0.5s ease, transform 0.8s ease, filter 0.5s ease;
   z-index: 1;
 }
 
-.character-card:hover .card-bg {
-  transform: scale(1.03);
+.card-bg.loading {
+  opacity: 0.3;
 }
 
 .card-overlay {
@@ -195,22 +225,48 @@ body {
   width: 100%;
   height: 100%;
   background: var(--bg-card-overlay);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(1.5px);
+  mix-blend-mode: multiply;
   z-index: 2;
 }
 
+.card-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.6;
+}
+
+.character-card:hover .card-bg {
+  transform: scale(1.03);
+}
+
 .card-reference {
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(0, 243, 255, 0.15);
 }
 
 .card-guess {
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 1px solid rgba(255, 0, 85, 0.15);
 }
 
 /* Content within Cards */
 .card-content {
   position: relative;
-  z-index: 3;
+  z-index: 5;
   width: 100%;
   max-width: 480px;
   display: flex;
@@ -219,10 +275,18 @@ body {
   text-align: center;
 }
 
+.card-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .card-tag {
   display: inline-block;
-  padding: 0.3rem 0.9rem;
-  margin-bottom: 1rem;
+  padding: 0.35rem 0.9rem;
   font-family: var(--font-display);
   font-size: 0.65rem;
   font-weight: 800;
@@ -239,6 +303,50 @@ body {
   border-color: rgba(255, 0, 85, 0.4);
 }
 
+/* Canonical Breakdown Interactive Button */
+.btn-breakdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.9rem;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: rgba(14, 20, 32, 0.85);
+  border: 1px solid rgba(0, 243, 255, 0.5);
+  border-radius: 6px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.3s ease;
+}
+
+.btn-breakdown:hover {
+  background: rgba(0, 243, 255, 0.25);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--accent-cyan-glow);
+}
+
+.btn-breakdown:active {
+  transform: translateY(0);
+}
+
+.btn-breakdown-icon {
+  font-size: 0.75rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.btn-breakdown:hover .btn-breakdown-icon {
+  transform: scale(1.2);
+}
+
 .character-name {
   font-family: var(--font-display);
   font-size: 2.25rem;
@@ -253,7 +361,7 @@ body {
   font-size: 1.1rem;
   font-weight: 500;
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -272,11 +380,11 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 1.25rem 2.25rem;
-  background: rgba(10, 14, 23, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 14, 23, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
   backdrop-filter: blur(16px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -427,6 +535,398 @@ body {
 }
 
 /* ==========================================================================
+   Cyber-Anime Canonical Breakdown Modal
+   ========================================================================== */
+.modal-cyber-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 6, 11, 0.85);
+  backdrop-filter: blur(16px);
+  padding: 1.5rem;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.modal-cyber-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-modal);
+  border: 1px solid rgba(0, 243, 255, 0.4);
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 0 35px rgba(0, 243, 255, 0.25), 0 30px 60px rgba(0, 0, 0, 0.9);
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.modal-ambient-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 180px;
+  background: radial-gradient(ellipse at top, rgba(0, 243, 255, 0.18), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.btn-modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.btn-modal-close:hover {
+  background: var(--accent-magenta);
+  border-color: var(--accent-magenta);
+  color: #ffffff;
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 0 15px var(--accent-magenta-glow);
+}
+
+/* Modal Header */
+.modal-cyber-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.modal-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.25rem;
+}
+
+.modal-system-tag {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+}
+
+.modal-status-pill {
+  font-family: var(--font-display);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.15rem 0.5rem;
+  background: rgba(0, 230, 118, 0.15);
+  border: 1px solid rgba(0, 230, 118, 0.4);
+  color: #00e676;
+  border-radius: 4px;
+}
+
+.modal-char-title {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+}
+
+.modal-char-subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.modal-feat-highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  background: linear-gradient(135deg, rgba(0, 243, 255, 0.08) 0%, rgba(157, 78, 221, 0.08) 100%);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: 8px;
+}
+
+.feat-icon {
+  font-size: 1.25rem;
+  color: var(--accent-yellow);
+}
+
+.feat-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #e2e8f0;
+}
+
+/* Modal Sections */
+.modal-section {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.title-decor {
+  display: inline-block;
+  width: 4px;
+  height: 14px;
+  background: var(--accent-magenta);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent-magenta);
+}
+
+/* Mathematical Breakdown Grid */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.breakdown-card {
+  background: rgba(18, 25, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.breakdown-card:hover {
+  border-color: rgba(0, 243, 255, 0.35);
+  transform: translateY(-2px);
+}
+
+.breakdown-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-icon {
+  font-size: 0.9rem;
+}
+
+.card-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.breakdown-card-val {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin-top: 0.2rem;
+}
+
+.breakdown-card-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.breakdown-card.card-inherited {
+  border-color: rgba(157, 78, 221, 0.35);
+  background: rgba(157, 78, 221, 0.08);
+}
+
+.card-inherited .breakdown-card-val {
+  color: #d8b4fe;
+}
+
+.breakdown-card.card-total {
+  border-color: rgba(255, 200, 0, 0.4);
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.1) 0%, rgba(255, 0, 85, 0.08) 100%);
+  grid-column: span 2;
+}
+
+.total-glow {
+  color: var(--accent-yellow) !important;
+  font-size: 2rem !important;
+  text-shadow: 0 0 15px var(--accent-yellow-glow);
+}
+
+/* Rivals Detailed Sub-list */
+.rivals-detailed-box {
+  background: rgba(10, 14, 23, 0.65);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rivals-box-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+}
+
+.rivals-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.rival-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  background: rgba(157, 78, 221, 0.15);
+  border: 1px solid rgba(157, 78, 221, 0.4);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: #e9d5ff;
+}
+
+.rival-bonus {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--accent-cyan);
+}
+
+.no-rivals-text {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Techniques Pills */
+.techniques-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.tech-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  background: rgba(0, 243, 255, 0.08);
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e0f2fe;
+  transition: all var(--transition-fast);
+}
+
+.tech-pill:hover {
+  background: rgba(0, 243, 255, 0.2);
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px var(--accent-cyan-glow);
+}
+
+.tech-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+/* Narrative Box */
+.narrative-box {
+  background: rgba(14, 20, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--accent-magenta);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+}
+
+.narrative-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+/* Modal Footer */
+.modal-cyber-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.btn-modal-action {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, #0099ff 100%);
+  color: #031320;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 20px var(--accent-cyan-glow);
+  transition: all var(--transition-fast);
+}
+
+.btn-modal-action:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
    Game Over Modal
    ========================================================================== */
 .game-over-overlay {
@@ -435,7 +935,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 100;
+  z-index: 150;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -578,7 +1078,7 @@ body {
 @keyframes scaleUp {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(15px);
+    transform: scale(0.92) translateY(12px);
   }
   to {
     opacity: 1;
@@ -611,7 +1111,7 @@ body {
     position: sticky;
     padding: 0 1rem;
     height: 64px;
-    background: rgba(7, 9, 14, 0.95);
+    background: rgba(6, 8, 13, 0.98);
     backdrop-filter: blur(10px);
   }
 
@@ -634,12 +1134,12 @@ body {
 
   .card-reference {
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 243, 255, 0.15);
   }
 
   .card-guess {
     border-left: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 0, 85, 0.15);
   }
 
   .character-name {
@@ -657,5 +1157,18 @@ body {
 
   .vs-text {
     font-size: 1.1rem;
+  }
+
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .breakdown-card.card-total {
+    grid-column: span 1;
+  }
+
+  .modal-cyber-dialog {
+    padding: 1.5rem 1.25rem;
+    max-height: 94vh;
   }
 }
