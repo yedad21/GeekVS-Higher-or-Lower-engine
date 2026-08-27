@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GeekVS - Juego interactivo de Higher or Lower y Cosmic Tier List canónica de niveles de poder con cálculo transitivo y justificación canónica.">
-  <title>GeekVS - Higher or Lower & Cosmic Tier List</title>
+  <meta name="description" content="GeekVS - Plataforma definitiva de niveles de poder canónicos: Higher or Lower, Directorio de Personajes, Registro de Universos, Cosmic Tier List y Arena de Duelos 1v1.">
+  <title>GeekVS - Canonical Combat Archive & Power Level Arena</title>
   
   <!-- Google Fonts: Orbitron & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,32 +22,58 @@
       <span class="logo-subtitle">CANONICAL COMBAT ARCHIVE</span>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Navigation Tabs (5 Vistas SPA) -->
     <nav class="tactical-nav" id="main-nav" aria-label="Navegación principal">
       <button class="nav-tab active" id="nav-btn-game" data-view="view-game" aria-label="Vista Higher or Lower">
         <span class="nav-tab-icon">🎮</span>
         <span class="nav-tab-text">Higher or Lower</span>
       </button>
-      <button class="nav-tab" id="nav-btn-tierlist" data-view="view-tierlist" aria-label="Vista Tier List y Roster">
-        <span class="nav-tab-icon">🏆</span>
-        <span class="nav-tab-text">Tier List & Roster</span>
+      <button class="nav-tab" id="nav-btn-characters" data-view="view-characters" aria-label="Vista Directorio de Personajes">
+        <span class="nav-tab-icon">👥</span>
+        <span class="nav-tab-text">Characters</span>
       </button>
-      <button class="nav-tab nav-tab-disabled" id="nav-btn-fight" disabled aria-disabled="true" title="Modo Duelo 1v1 - Próximamente en Fase 3">
+      <button class="nav-tab" id="nav-btn-universes" data-view="view-universes" aria-label="Vista Universos">
+        <span class="nav-tab-icon">🌌</span>
+        <span class="nav-tab-text">Universes</span>
+      </button>
+      <button class="nav-tab" id="nav-btn-tierlist" data-view="view-tierlist" aria-label="Vista Tier List">
+        <span class="nav-tab-icon">🏆</span>
+        <span class="nav-tab-text">Tier List</span>
+      </button>
+      <button class="nav-tab" id="nav-btn-pickfight" data-view="view-pickfight" aria-label="Vista Duelo Versus 1v1">
         <span class="nav-tab-icon">⚔️</span>
         <span class="nav-tab-text">Pick a Fight</span>
-        <span class="nav-tab-badge">FASE 3</span>
       </button>
     </nav>
     
-    <!-- Scoreboard (Visible in Game mode) -->
-    <div class="scoreboard" id="game-scoreboard">
-      <div class="score-pill current-streak-box">
-        <span class="score-label">Racha</span>
-        <span id="current-streak" class="score-val">0</span>
+    <!-- Header Right Controls (Global Search & My Stats) -->
+    <div class="header-right-controls">
+      <!-- Buscador Global con Autocompletado Desplegable -->
+      <div class="header-search-box" id="header-search-container">
+        <span class="header-search-icon">🔍</span>
+        <input type="text" id="global-search-input" class="header-search-input" placeholder="Buscar personaje..." autocomplete="off" aria-label="Buscador global">
+        <button id="btn-clear-global-search" class="btn-clear-search hidden" aria-label="Limpiar búsqueda">✕</button>
+        
+        <!-- Dropdown de Resultados de Búsqueda Global -->
+        <div class="global-search-results hidden" id="global-search-results" role="listbox"></div>
       </div>
-      <div class="score-pill high-score-box">
-        <span class="score-label">Récord</span>
-        <span id="high-score" class="score-val">0</span>
+
+      <!-- Botón de Estadísticas de Usuario -->
+      <button class="btn-open-stats" id="btn-open-stats" aria-label="Abrir panel de mis estadísticas">
+        <span class="stats-icon">🔥</span>
+        <span class="stats-btn-text">Mis Stats</span>
+      </button>
+
+      <!-- Scoreboard de Racha Rápida -->
+      <div class="scoreboard" id="game-scoreboard">
+        <div class="score-pill current-streak-box" title="Racha actual de victorias">
+          <span class="score-label">Racha</span>
+          <span id="current-streak" class="score-val">0</span>
+        </div>
+        <div class="score-pill high-score-box" title="Récord máximo histórico">
+          <span class="score-label">Récord</span>
+          <span id="high-score" class="score-val">0</span>
+        </div>
       </div>
     </div>
   </header>
@@ -138,7 +164,92 @@
   </main>
 
   <!-- =========================================================================
-       VIEW 2: COSMIC TIER LIST & ROSTER
+       VIEW 2: CHARACTERS DIRECTORY (DIRECTORIO DE PERSONAJES)
+       ========================================================================= -->
+  <section class="game-view characters-view hidden" id="view-characters">
+    <div class="spa-view-container">
+      
+      <!-- Cabecera del Directorio -->
+      <header class="spa-header-banner">
+        <div class="spa-title-group">
+          <div class="tierlist-system-badge">
+            <span class="system-dot"></span>
+            <span>CATÁLOGO CANÓNICO EXPANDIDO • MATRIX O(1)</span>
+          </div>
+          <h2 class="spa-title">DIRECTORIO DE PERSONAJES</h2>
+          <p class="spa-desc">
+            Explora la nómina completa de combatientes analizados por GeekVS. Filtra alfabéticamente o por franquicia para inspeccionar sus hazañas, técnicas y justificaciones canónicas.
+          </p>
+        </div>
+
+        <div class="tierlist-stats-counter">
+          <span class="stats-counter-number" id="directory-char-count">0</span>
+          <span class="stats-counter-label">Personajes Visibles</span>
+        </div>
+      </header>
+
+      <!-- Barra de Índice Alfabético Fija -->
+      <nav class="alphabet-bar" id="alphabet-bar" aria-label="Índice alfabético">
+        <!-- Generado dinámicamente: ALL, A, B, C... Z -->
+      </nav>
+
+      <!-- Barra de Herramientas del Directorio -->
+      <div class="tierlist-toolbar">
+        <div class="search-box-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="input-directory-search" class="cyber-input" placeholder="Buscar por nombre, técnica o hazaña..." autocomplete="off">
+          <button id="btn-clear-directory-search" class="btn-clear-search hidden" aria-label="Limpiar búsqueda">✕</button>
+        </div>
+
+        <div class="filter-box-container">
+          <span class="filter-icon">🌌</span>
+          <select id="select-directory-universe" class="cyber-select" aria-label="Filtrar por universo">
+            <option value="all">Todas las obras</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Tarjetas del Directorio -->
+      <div class="characters-directory-grid" id="characters-directory-grid">
+        <!-- Renderizado dinámicamente con paginación/scroll suave -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       VIEW 3: UNIVERSES REGISTRY (REGISTRO DE UNIVERSOS & FRANQUICIAS)
+       ========================================================================= -->
+  <section class="game-view universes-view hidden" id="view-universes">
+    <div class="spa-view-container">
+      
+      <!-- Cabecera de Universos -->
+      <header class="spa-header-banner">
+        <div class="spa-title-group">
+          <div class="tierlist-system-badge">
+            <span class="system-dot"></span>
+            <span>MÉTRICAS MULTIVERSALES & FRANQUICIAS</span>
+          </div>
+          <h2 class="spa-title">UNIVERSOS & FRANQUICIAS</h2>
+          <p class="spa-desc">
+            Comparativa agregada del poder promedio, combatiente cumbre y densidad militar de cada universo ficticio registrado en GeekVS.
+          </p>
+        </div>
+
+        <div class="tierlist-stats-counter">
+          <span class="stats-counter-number" id="universes-total-count">0</span>
+          <span class="stats-counter-label">Franquicias Registradas</span>
+        </div>
+      </header>
+
+      <!-- Cuadrícula de Franquicias / Universos -->
+      <div class="universes-grid" id="universes-grid">
+        <!-- Renderizado dinámico de tarjetas de universo con Avg Power -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       VIEW 4: COSMIC TIER LIST & ROSTER
        ========================================================================= -->
   <section class="game-view tierlist-view hidden" id="view-tierlist">
     <div class="tierlist-container">
@@ -184,6 +295,308 @@
       </div>
     </div>
   </section>
+
+  <!-- =========================================================================
+       VIEW 5: ARENA DE DUELOS DIRECTOS (PICK A FIGHT)
+       ========================================================================= -->
+  <section class="game-view pickfight-view hidden" id="view-pickfight">
+    <div class="pickfight-container">
+      
+      <!-- Cabecera de la Arena de Duelos -->
+      <header class="pickfight-header-banner">
+        <div class="pickfight-title-group">
+          <div class="pickfight-system-badge">
+            <span class="system-dot pulse-cyan"></span>
+            <span>SIMULADOR DE COMBATE 1V1 • VERSUS ANIME MATRIX</span>
+          </div>
+          <h2 class="pickfight-title">ARENA DE DUELOS DIRECTOS</h2>
+          <p class="pickfight-desc">
+            Selecciona libremente a dos combatientes de cualquier universo ficticio. El motor GeekVS evaluará las estadísticas canónicas, multiplicadores de hazaña y herencia transitiva para proclamar al vencedor absoluto.
+          </p>
+        </div>
+      </header>
+
+      <!-- Ranuras Interactivas de Selección (P1 vs P2) -->
+      <div class="pickfight-arena-grid">
+        
+        <!-- RANURA JUGADOR 1 (P1) -->
+        <div class="pickfight-slot slot-p1" id="slot-p1">
+          <!-- Estado Vacío -->
+          <div class="slot-empty-state" id="slot-p1-empty">
+            <div class="slot-silhouette">⚔️</div>
+            <span class="slot-role-tag">JUGADOR 1 (P1)</span>
+            <p class="slot-prompt">Selecciona al primer combatiente</p>
+            <button class="btn-slot-select" id="btn-select-p1">
+              <span class="btn-icon">+</span>
+              <span>Elegir Peleador</span>
+            </button>
+          </div>
+
+          <!-- Estado Seleccionado -->
+          <div class="slot-selected-state hidden" id="slot-p1-selected">
+            <div class="slot-bg" id="slot-p1-bg"></div>
+            <div class="slot-overlay"></div>
+            <div class="slot-scanline"></div>
+            <div class="slot-content">
+              <div class="slot-header-meta">
+                <span class="slot-badge-p1">P1</span>
+                <button class="btn-slot-change" id="btn-change-p1">Cambiar</button>
+                <button class="btn-breakdown" id="btn-breakdown-p1" aria-label="Ver Desglose Canónico de P1">
+                  <span class="btn-breakdown-icon">ℹ️</span>
+                  <span class="btn-breakdown-text">Desglose</span>
+                </button>
+              </div>
+              <h3 class="slot-char-name" id="slot-p1-name">---</h3>
+              <p class="slot-char-origin" id="slot-p1-origin">---</p>
+              <div class="slot-power-tag" id="slot-p1-power-tag">
+                <span class="power-tag-label">PODER CANÓNICO</span>
+                <span class="power-tag-val" id="slot-p1-power">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROLADOR CENTRAL (VS & BOTÓN CALCULAR) -->
+        <div class="pickfight-center-control">
+          <div class="vs-badge vs-badge-large">
+            <div class="vs-glow"></div>
+            <span class="vs-text">VS</span>
+          </div>
+          <button class="btn-run-battle" id="btn-run-battle" disabled>
+            <span class="battle-btn-glow"></span>
+            <span class="battle-btn-icon">⚔️</span>
+            <span class="battle-btn-text">CALCULAR COMBATE</span>
+          </button>
+        </div>
+
+        <!-- RANURA JUGADOR 2 (P2) -->
+        <div class="pickfight-slot slot-p2" id="slot-p2">
+          <!-- Estado Vacío -->
+          <div class="slot-empty-state" id="slot-p2-empty">
+            <div class="slot-silhouette">🛡️</div>
+            <span class="slot-role-tag tag-p2">JUGADOR 2 (P2)</span>
+            <p class="slot-prompt">Selecciona al segundo combatiente</p>
+            <button class="btn-slot-select" id="btn-select-p2">
+              <span class="btn-icon">+</span>
+              <span>Elegir Peleador</span>
+            </button>
+          </div>
+
+          <!-- Estado Seleccionado -->
+          <div class="slot-selected-state hidden" id="slot-p2-selected">
+            <div class="slot-bg" id="slot-p2-bg"></div>
+            <div class="slot-overlay"></div>
+            <div class="slot-scanline"></div>
+            <div class="slot-content">
+              <div class="slot-header-meta">
+                <span class="slot-badge-p2">P2</span>
+                <button class="btn-slot-change" id="btn-change-p2">Cambiar</button>
+                <button class="btn-breakdown" id="btn-breakdown-p2" aria-label="Ver Desglose Canónico de P2">
+                  <span class="btn-breakdown-icon">ℹ️</span>
+                  <span class="btn-breakdown-text">Desglose</span>
+                </button>
+              </div>
+              <h3 class="slot-char-name" id="slot-p2-name">---</h3>
+              <p class="slot-char-origin" id="slot-p2-origin">---</p>
+              <div class="slot-power-tag" id="slot-p2-power-tag">
+                <span class="power-tag-label">PODER CANÓNICO</span>
+                <span class="power-tag-val" id="slot-p2-power">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL DE RESULTADOS DEL DUELO (Oculto inicialmente) -->
+      <div class="battle-results-panel hidden" id="battle-results-panel">
+        
+        <!-- Tarjeta de Declaración del Ganador -->
+        <div class="winner-declaration-card" id="winner-card">
+          <div class="winner-trophy">👑</div>
+          <span class="winner-pretitle">VICTORIA CANÓNICA DECLARADA</span>
+          <h3 class="winner-name" id="winner-char-name">---</h3>
+          <div class="winner-badge-box">
+            <span class="winner-margin-badge" id="winner-margin-badge">Diferencial de Victoria</span>
+          </div>
+        </div>
+
+        <!-- Barra Comparativa Dual de Dominio de Combate -->
+        <div class="power-comparison-bar-box">
+          <div class="comparison-header">
+            <span class="comp-label-left" id="comp-name-p1">P1</span>
+            <span class="comp-vs-title">RATIO DE DOMINIO EN COMBATE</span>
+            <span class="comp-label-right" id="comp-name-p2">P2</span>
+          </div>
+          <div class="dual-power-progress-bar">
+            <div class="bar-fill-p1" id="bar-p1" style="width: 50%"></div>
+            <div class="bar-fill-p2" id="bar-p2" style="width: 50%"></div>
+          </div>
+          <div class="comparison-values">
+            <span class="comp-val-p1" id="comp-score-p1">0 pts (50%)</span>
+            <span class="comp-val-p2" id="comp-score-p2">0 pts (50%)</span>
+          </div>
+        </div>
+
+        <!-- Tabla Comparativa de Estadísticas Canónicas -->
+        <div class="stats-comparison-table-box">
+          <h4 class="table-title">📊 MATRIZ CANÓNICA COMPARATIVA FRENTE A FRENTE</h4>
+          <div class="comparison-grid-table">
+            <div class="table-row-head">
+              <span class="col-char p1-col" id="tbl-header-p1">Combatiente 1</span>
+              <span class="col-metric">Métrica Canónica</span>
+              <span class="col-char p2-col" id="tbl-header-p2">Combatiente 2</span>
+            </div>
+            <div class="table-row">
+              <span class="col-val p1-val" id="tbl-kills-p1">0</span>
+              <span class="col-metric">⚔️ Bajas Directas</span>
+              <span class="col-val p2-val" id="tbl-kills-p2">0</span>
+            </div>
+            <div class="table-row">
+              <span class="col-val p1-val" id="tbl-feats-p1">0</span>
+              <span class="col-metric">🏆 Puntos de Hazaña</span>
+              <span class="col-val p2-val" id="tbl-feats-p2">0</span>
+            </div>
+            <div class="table-row">
+              <span class="col-val p1-val" id="tbl-inherited-p1">0</span>
+              <span class="col-metric">🧬 Aporte Transitivo de Rivales</span>
+              <span class="col-val p2-val" id="tbl-inherited-p2">0</span>
+            </div>
+            <div class="table-row total-row">
+              <span class="col-val p1-val total-highlight" id="tbl-total-p1">0</span>
+              <span class="col-metric">💥 Nivel de Amenaza Total</span>
+              <span class="col-val p2-val total-highlight" id="tbl-total-p2">0</span>
+            </div>
+          </div>
+
+          <!-- Comparativa de Técnicas Clave -->
+          <div class="dual-techniques-box">
+            <div class="tech-col tech-col-p1">
+              <span class="tech-col-title" id="tech-title-p1">Técnicas P1</span>
+              <div class="techniques-container" id="tech-list-p1"></div>
+            </div>
+            <div class="tech-col tech-col-p2">
+              <span class="tech-col-title" id="tech-title-p2">Técnicas P2</span>
+              <div class="techniques-container" id="tech-list-p2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botones de Acción y Compartir Duelo -->
+        <div class="results-actions-bar">
+          <button class="btn-share-duel" id="btn-share-duel">
+            <span class="share-icon">🔗</span>
+            <span id="btn-share-text">Copiar Enlace del Duelo</span>
+          </button>
+          <button class="btn-reset-battle" id="btn-reset-battle">
+            <span>🔄 Nuevo Duelo</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       DRAWER LATERAL: MIS ESTADÍSTICAS (MY STATS)
+       ========================================================================= -->
+  <div class="drawer-stats-overlay hidden" id="drawer-my-stats" role="dialog" aria-modal="true" aria-labelledby="stats-drawer-title">
+    <div class="drawer-stats-panel">
+      <div class="drawer-stats-header">
+        <div class="stats-header-title-box">
+          <span class="select-header-badge">REGISTRO DE JUGADOR</span>
+          <h3 class="select-header-title" id="stats-drawer-title">MIS ESTADÍSTICAS</h3>
+        </div>
+        <button class="btn-modal-close" id="btn-close-stats" aria-label="Cerrar estadísticas">✕</button>
+      </div>
+
+      <!-- Cuadrícula de Estadísticas del Usuario -->
+      <div class="stats-tiles-grid">
+        <div class="stat-tile">
+          <div class="stat-tile-icon">🎮</div>
+          <div class="stat-tile-info">
+            <span class="stat-tile-label">Partidas Jugadas</span>
+            <span class="stat-tile-number" id="stat-total-games">0</span>
+          </div>
+        </div>
+
+        <div class="stat-tile highlight-gold">
+          <div class="stat-tile-icon">⚡</div>
+          <div class="stat-tile-info">
+            <span class="stat-tile-label">Racha Récord</span>
+            <span class="stat-tile-number" id="stat-high-streak">0</span>
+          </div>
+        </div>
+
+        <div class="stat-tile highlight-magenta">
+          <div class="stat-tile-icon">⚔️</div>
+          <div class="stat-tile-info">
+            <span class="stat-tile-label">Duelos Simulados 1v1</span>
+            <span class="stat-tile-number" id="stat-total-duels">0</span>
+          </div>
+        </div>
+
+        <div class="stat-tile highlight-cyan">
+          <div class="stat-tile-icon">🎯</div>
+          <div class="stat-tile-info">
+            <span class="stat-tile-label">Desgloses Consultados</span>
+            <span class="stat-tile-number" id="stat-total-breakdowns">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Personaje Favorito / Más Consultado -->
+      <div class="favorite-character-box">
+        <span class="fav-box-title">👑 COMBATIENTE MÁS CONSULTADO</span>
+        <div class="fav-character-card" id="fav-character-card">
+          <div class="fav-char-avatar" id="fav-char-avatar"></div>
+          <div class="fav-char-details">
+            <h4 class="fav-char-name" id="fav-char-name">---</h4>
+            <p class="fav-char-universe" id="fav-char-universe">---</p>
+            <span class="fav-char-views" id="fav-char-views">0 consultas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones del Drawer de Estadísticas -->
+      <div class="drawer-actions">
+        <button class="btn-clear-stats" id="btn-clear-stats">Reiniciar Estadísticas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL / DRAWER DE SELECCIÓN DE COMBATIENTE
+       ========================================================================= -->
+  <div class="modal-cyber-overlay hidden" id="drawer-fighter-select" role="dialog" aria-modal="true" aria-labelledby="fighter-select-title">
+    <div class="fighter-select-dialog">
+      <div class="fighter-select-header">
+        <div class="select-header-title-box">
+          <span class="select-header-badge" id="fighter-select-slot-badge">SELECCIÓN P1</span>
+          <h3 class="select-header-title" id="fighter-select-title">ELIGE TU COMBATIENTE</h3>
+        </div>
+        <button class="btn-modal-close" id="btn-close-fighter-select" aria-label="Cerrar selector">✕</button>
+      </div>
+
+      <!-- Barra de Filtros del Selector -->
+      <div class="tierlist-toolbar select-toolbar">
+        <div class="search-box-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="input-search-fighter" class="cyber-input" placeholder="Buscar por nombre, técnica u obra..." autocomplete="off">
+          <button id="btn-clear-search-fighter" class="btn-clear-search hidden" aria-label="Limpiar búsqueda">✕</button>
+        </div>
+        <div class="filter-box-container">
+          <span class="filter-icon">🌌</span>
+          <select id="select-universe-fighter" class="cyber-select" aria-label="Filtrar por universo">
+            <option value="all">Todas las obras</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Combatientes Disponibles -->
+      <div class="fighter-select-grid" id="fighter-select-grid">
+        <!-- Renderizado dinámicamente -->
+      </div>
+    </div>
+  </div>
 
   <!-- =========================================================================
        MODAL DESGLOSE CANÓNICO (Cyber-Anime UI)
