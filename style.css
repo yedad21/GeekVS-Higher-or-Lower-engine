@@ -545,7 +545,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  min-height: 32px;
+  margin-bottom: 1.25rem;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -602,27 +603,39 @@ body {
   font-size: 2.25rem;
   font-weight: 800;
   line-height: 1.15;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 0.35rem;
   text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
   letter-spacing: 0.5px;
 }
 
 .character-origin {
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: 1.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  height: 24px;
+  line-height: 24px;
+  margin-bottom: 1.5rem;
+}
+
+.card-guess .character-origin {
+  margin-bottom: 0.25rem;
 }
 
 .guess-prompt {
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-secondary);
   text-align: center;
-  margin: 0 0 1.1rem 0;
+  height: 18px;
+  line-height: 18px;
+  margin: 0 0 0.85rem 0;
   letter-spacing: 1px;
   text-transform: uppercase;
   opacity: 0.95;
@@ -633,36 +646,42 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.25rem 2.25rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 300px;
+  height: 140px;
+  padding: 1rem 1.5rem;
   background: rgba(10, 14, 23, 0.88);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
   backdrop-filter: blur(16px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .power-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .power-number {
   font-family: var(--font-display);
-  font-size: 3.5rem;
+  font-size: 3.25rem;
   font-weight: 900;
   color: var(--accent-yellow);
   line-height: 1;
   text-shadow: 0 0 25px rgba(255, 200, 0, 0.4);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
 }
 
 .power-unit {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 1px;
   color: var(--text-secondary);
@@ -723,10 +742,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  max-width: 320px;
+  max-width: 300px;
+  height: 140px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .btn-action {
@@ -736,13 +757,12 @@ body {
   justify-content: center;
   gap: 0.65rem;
   width: 100%;
-  min-width: 240px;
-  max-width: 280px;
-  padding: 1rem 1.4rem;
+  height: 64px;
+  padding: 0 1.25rem;
   border-radius: 12px;
   border: 2px solid transparent;
   font-family: var(--font-display);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   color: #ffffff;
@@ -751,6 +771,7 @@ body {
   overflow: hidden;
   transition: all var(--transition-fast);
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .btn-higher {

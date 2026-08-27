@@ -787,11 +787,39 @@ function actualizarEstadoAudioUI() {
   if (dom.audioToggleText) dom.audioToggleText.textContent = activo ? 'Audio: ON' : 'Audio: OFF';
 }
 
+const VIEW_ROUTES = {
+  'view-game': '/',
+  'view-characters': '/characters',
+  'view-universes': '/universes',
+  'view-tierlist': '/tierlist',
+  'view-pickfight': '/versus',
+  'view-blog': '/blog'
+};
+
+const ROUTE_TO_VIEW = {
+  '/': 'view-game',
+  '/index.html': 'view-game',
+  '/blog': 'view-blog',
+  '/blog/': 'view-blog',
+  '/characters': 'view-characters',
+  '/characters/': 'view-characters',
+  '/universes': 'view-universes',
+  '/universes/': 'view-universes',
+  '/tierlist': 'view-tierlist',
+  '/tierlist/': 'view-tierlist',
+  '/versus': 'view-pickfight',
+  '/versus/': 'view-pickfight',
+  '/pickfight': 'view-pickfight',
+  '/pickfight/': 'view-pickfight'
+};
+
 /**
- * Cambia la vista activa de la SPA (6 Vistas).
+ * Cambia la vista activa de la SPA (6 Vistas) con soporte para historial y URLs limpias.
  * @param {string} viewId - ID de la vista ('view-game' | 'view-characters' | 'view-universes' | 'view-tierlist' | 'view-pickfight' | 'view-blog').
+ * @param {boolean} pushHistory - Determina si se debe actualizar el historial del navegador con pushState.
  */
-function cambiarVista(viewId) {
+function cambiarVista(viewId, pushHistory = true) {
+  if (!viewId) return;
   soundEngine.playClick();
   state.activeView = viewId;
 
@@ -819,6 +847,14 @@ function cambiarVista(viewId) {
     renderizarTierList();
   } else if (viewId === 'view-blog') {
     renderizarBlog();
+  }
+
+  // Enrutamiento limpio con HTML5 History API
+  if (pushHistory && VIEW_ROUTES[viewId]) {
+    const targetRoute = VIEW_ROUTES[viewId];
+    if (window.location.pathname !== targetRoute) {
+      window.history.pushState({ view: viewId }, '', targetRoute);
+    }
   }
 }
 
@@ -1923,20 +1959,34 @@ function procesarParametrosUrl() {
   const p1Id = params.get('vs') || params.get('p1');
   const p2Id = params.get('p2');
   const articleId = params.get('article');
+  const path = window.location.pathname;
 
   if (p1Id && p2Id && mapaCatalogo.has(p1Id) && mapaCatalogo.has(p2Id)) {
     asignarPeleador('p1', mapaCatalogo.get(p1Id));
     asignarPeleador('p2', mapaCatalogo.get(p2Id));
-    cambiarVista('view-pickfight');
+    cambiarVista('view-pickfight', false);
     ejecutarCalculoCombate();
   } else if (articleId) {
     const art = ARTICULOS_BLOG.find((a) => a.id === articleId);
     if (art) {
-      cambiarVista('view-blog');
+      cambiarVista('view-blog', false);
       abrirModalArticulo(art);
     }
+  } else if (ROUTE_TO_VIEW[path] && ROUTE_TO_VIEW[path] !== 'view-game') {
+    cambiarVista(ROUTE_TO_VIEW[path], false);
   }
 }
+
+// Soporte para los botones Atrás / Adelante del navegador
+window.addEventListener('popstate', (e) => {
+  if (e.state && e.state.view) {
+    cambiarVista(e.state.view, false);
+  } else {
+    const path = window.location.pathname;
+    const targetView = ROUTE_TO_VIEW[path] || 'view-game';
+    cambiarVista(targetView, false);
+  }
+});
 
 async function inicializarApp() {
   try {
