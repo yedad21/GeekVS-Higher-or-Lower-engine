@@ -3,7 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GeekVS - Plataforma definitiva de niveles de poder canónicos: Higher or Lower, Directorio de Personajes, Registro de Universos, Cosmic Tier List y Arena de Duelos 1v1.">
+  <meta name="description" content="GeekVS - Archivo definitivo de niveles de poder canónicos y combates anime/cómics: Higher or Lower, Directorio, Registro de Universos, Cosmic Tier List, Duelos 1v1 y Battle Breakdowns.">
+  <meta name="keywords" content="niveles de poder anime, higher or lower anime, tier list anime, goku vs vegeta, gojo vs sukuna, luffy gear 5 vs kaido, powerscaling canónico, anime versus, manga batallas, battle lore">
+  <meta name="author" content="GeekVS Team">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook / Discord -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://geekvs.app/">
+  <meta property="og:title" content="GeekVS - Canonical Combat Archive & Power Level Arena">
+  <meta property="og:description" content="Compara niveles de poder canónicos con el algoritmo transitivo GeekVS. Juega Higher or Lower, consulta la Cosmic Tier List, simula duelos 1v1 y lee desgloses de batallas.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:site_name" content="GeekVS">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://geekvs.app/">
+  <meta name="twitter:title" content="GeekVS - Canonical Combat Archive & Power Level Arena">
+  <meta name="twitter:description" content="Compara niveles de poder canónicos, juega Higher or Lower y analiza desgloses de batallas legendarias.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=1200&h=630&q=80">
+
   <title>GeekVS - Canonical Combat Archive & Power Level Arena</title>
   
   <!-- Google Fonts: Orbitron & Outfit -->
@@ -43,6 +62,10 @@
       <button class="nav-tab" id="nav-btn-pickfight" data-view="view-pickfight" aria-label="Vista Duelo Versus 1v1">
         <span class="nav-tab-icon">⚔️</span>
         <span class="nav-tab-text">Pick a Fight</span>
+      </button>
+      <button class="nav-tab" id="nav-btn-blog" data-view="view-blog" aria-label="Vista Battle Breakdowns y Lore">
+        <span class="nav-tab-icon">📝</span>
+        <span class="nav-tab-text">Blog & Lore</span>
       </button>
     </nav>
     
@@ -506,6 +529,59 @@
   </section>
 
   <!-- =========================================================================
+       VIEW 6: BATTLE BREAKDOWNS & LORE (BLOG & SEO ARTICLES)
+       ========================================================================= -->
+  <section class="game-view blog-view hidden" id="view-blog">
+    <div class="spa-view-container">
+      
+      <!-- Cabecera del Blog / Battle Breakdowns -->
+      <header class="spa-header-banner">
+        <div class="spa-title-group">
+          <div class="tierlist-system-badge">
+            <span class="system-dot pulse-cyan"></span>
+            <span>ANÁLISIS CANÓNICO & LORE DE COMBATE • SEO ARCHIVE</span>
+          </div>
+          <h2 class="spa-title">BATTLE BREAKDOWNS & LORE</h2>
+          <p class="spa-desc">
+            Análisis canónicos profundos, desgloses tácticos fase por fase y debates multiversales respaldados por el motor matemático recursivo de GeekVS.
+          </p>
+        </div>
+
+        <div class="tierlist-stats-counter">
+          <span class="stats-counter-number" id="blog-articles-count">0</span>
+          <span class="stats-counter-label">Análisis Publicados</span>
+        </div>
+      </header>
+
+      <!-- Barra de Filtros Rápidos de Categoría y Búsqueda -->
+      <div class="blog-toolbar">
+        <div class="blog-categories-bar" id="blog-categories-bar">
+          <button class="blog-cat-btn active" data-category="all">Todos los Artículos</button>
+          <button class="blog-cat-btn" data-category="versus">Versus Cross-Universe</button>
+          <button class="blog-cat-btn" data-category="guides">Guías de Poder</button>
+          <button class="blog-cat-btn" data-category="formulas">Explicación de Fórmulas</button>
+        </div>
+
+        <div class="search-box-container blog-search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="input-blog-search" class="cyber-input" placeholder="Buscar por tema, personaje o técnica..." autocomplete="off">
+          <button id="btn-clear-blog-search" class="btn-clear-search hidden" aria-label="Limpiar búsqueda">✕</button>
+        </div>
+      </div>
+
+      <!-- Artículo Destacado (Featured Breakdown) -->
+      <div class="featured-article-container" id="featured-article-container">
+        <!-- Inyectado dinámicamente -->
+      </div>
+
+      <!-- Cuadrícula de Artículos del Blog -->
+      <div class="blog-grid" id="blog-grid">
+        <!-- Inyectado dinámicamente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
        DRAWER LATERAL: MIS ESTADÍSTICAS (MY STATS)
        ========================================================================= -->
   <div class="drawer-stats-overlay hidden" id="drawer-my-stats" role="dialog" aria-modal="true" aria-labelledby="stats-drawer-title">
@@ -745,6 +821,175 @@
       </button>
     </div>
   </div>
+
+  <!-- =========================================================================
+       MODAL: LECTOR DE ARTÍCULO EXPANDIDO (BATTLE BREAKDOWN EXPANDED)
+       ========================================================================= -->
+  <div class="article-reader-overlay hidden" id="modal-article-reader" role="dialog" aria-modal="true" aria-labelledby="article-reader-title">
+    <div class="article-reader-dialog">
+      
+      <!-- Cabecera del Artículo -->
+      <header class="article-reader-header">
+        <div class="article-reader-meta">
+          <span class="article-category-badge" id="article-reader-cat">VERSUS CROSS-UNIVERSE</span>
+          <span class="article-read-time" id="article-reader-time">⏱️ 8 min de lectura</span>
+          <span class="article-date" id="article-reader-date">Publicado: Agosto 2026</span>
+        </div>
+        <button class="btn-modal-close" id="btn-close-article-reader" aria-label="Cerrar artículo">✕</button>
+      </header>
+
+      <h2 class="article-reader-title" id="article-reader-title">---</h2>
+      
+      <!-- Banner Visual del Artículo -->
+      <div class="article-reader-banner" id="article-reader-banner">
+        <div class="article-banner-overlay"></div>
+      </div>
+
+      <!-- Contenido Estructurado del Artículo -->
+      <div class="article-reader-body">
+        
+        <!-- 1. Introducción Táctica -->
+        <section class="article-body-section">
+          <h3 class="article-section-heading">
+            <span class="heading-dot"></span>
+            1. INTRODUCCIÓN TÁCTICA & CONTEXTO CANÓNICO
+          </h3>
+          <div class="article-section-content" id="article-reader-intro">
+            <!-- Párrafo introductorio -->
+          </div>
+        </section>
+
+        <!-- 2. Fortalezas y Debilidades Canónicas -->
+        <section class="article-body-section">
+          <h3 class="article-section-heading">
+            <span class="heading-dot"></span>
+            2. ANÁLISIS DE FORTALEZAS & VULNERABILIDADES
+          </h3>
+          <div class="article-dual-matrix" id="article-reader-matrix">
+            <!-- Matriz comparativa de bandos -->
+          </div>
+        </section>
+
+        <!-- 3. Desglose Ronda por Ronda -->
+        <section class="article-body-section">
+          <h3 class="article-section-heading">
+            <span class="heading-dot"></span>
+            3. DESGLOSE DEL ENFRENTAMIENTO FASE POR FASE
+          </h3>
+          <div class="article-rounds-container" id="article-reader-rounds">
+            <!-- Fases tácticas -->
+          </div>
+        </section>
+
+        <!-- 4. Veredicto Final GeekVS -->
+        <section class="article-body-section verdict-section">
+          <h3 class="article-section-heading verdict-heading">
+            <span class="heading-dot" style="background: var(--accent-yellow); box-shadow: 0 0 10px var(--accent-yellow)"></span>
+            4. RESOLUCIÓN & VEREDICTO DEL MOTOR GEEKVS
+          </h3>
+          <div class="verdict-box" id="article-reader-verdict">
+            <!-- Veredicto estructurado -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Footer del Lector con Acción para Simular Duelo -->
+      <footer class="article-reader-footer">
+        <button class="btn-modal-action btn-simulate-article" id="btn-article-simulate">
+          <span>⚔️ PROBAR COMBATE EN LA ARENA 1V1</span>
+        </button>
+        <button class="btn-modal-action btn-secondary" id="btn-article-close-bottom">VOLVER A LOS ANÁLISIS</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       FOOTER TÁCTICO GLOBAL
+       ========================================================================= -->
+  <footer class="tactical-footer" id="tactical-footer">
+    <div class="footer-inner-container">
+      
+      <!-- 4 Columnas Principales -->
+      <div class="footer-columns-grid">
+        
+        <!-- Columna 1: Marca & Misión -->
+        <div class="footer-col footer-col-brand">
+          <div class="footer-brand">
+            <h3 class="logo-title">GEEK<span class="highlight">VS</span></h3>
+            <span class="logo-subtitle">CANONICAL COMBAT ARCHIVE</span>
+          </div>
+          <p class="footer-brand-desc">
+            La plataforma definitiva de indexación matemática de niveles de poder, duelos 1v1 y análisis canónico multiversal sin sesgos de fandom.
+          </p>
+          <div class="footer-version-tag">
+            <span class="version-dot"></span>
+            <span>v1.0.0 Stable • Matrix O(1) Transitiva</span>
+          </div>
+        </div>
+
+        <!-- Columna 2: Explorar (Enlaces directos a las 6 vistas SPA) -->
+        <div class="footer-col footer-col-nav">
+          <h4 class="footer-col-title">EXPLORAR ARCHIVO</h4>
+          <ul class="footer-links-list">
+            <li><button class="footer-nav-link" data-view="view-game">🎮 Higher or Lower Arena</button></li>
+            <li><button class="footer-nav-link" data-view="view-characters">👥 Directorio de Combatientes</button></li>
+            <li><button class="footer-nav-link" data-view="view-universes">🌌 Registro de Universos</button></li>
+            <li><button class="footer-nav-link" data-view="view-tierlist">🏆 Cosmic Tier List Oficial</button></li>
+            <li><button class="footer-nav-link" data-view="view-pickfight">⚔️ Arena de Duelos 1v1</button></li>
+            <li><button class="footer-nav-link" data-view="view-blog">📝 Battle Breakdowns & Lore</button></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Newsletter Táctico -->
+        <div class="footer-col footer-col-newsletter">
+          <h4 class="footer-col-title">ARCHIVO TÁCTICO</h4>
+          <p class="footer-newsletter-text">
+            Recibe nuevos desgloses canónicos, incorporaciones masivas al catálogo y actualizaciones de la fórmula en tu bandeja.
+          </p>
+          <form class="footer-newsletter-form" id="footer-newsletter-form">
+            <div class="newsletter-input-group">
+              <input type="email" id="newsletter-email" class="newsletter-input" placeholder="tu_correo@combate.io" required autocomplete="email">
+              <button type="submit" class="btn-newsletter-submit" id="btn-newsletter-submit">
+                <span>UNIRSE</span>
+                <span class="btn-newsletter-arrow">→</span>
+              </button>
+            </div>
+            <span class="newsletter-feedback hidden" id="newsletter-feedback">✓ ¡Enlace táctico confirmado! Revisa tu correo.</span>
+          </form>
+          <div class="footer-community-stats">
+            <span>🔥 +12.4K Estrategas y Fanes de Combate Conectados</span>
+          </div>
+        </div>
+
+        <!-- Columna 4: Legal & Fuentes Canónicas -->
+        <div class="footer-col footer-col-legal">
+          <h4 class="footer-col-title">FUENTES & LEGAL</h4>
+          <p class="footer-legal-text">
+            <strong>Fair Use Notice:</strong> Todas las imágenes, nombres y marcas registradas pertenecen a sus respectivos autores y editoriales (Shueisha, Kodansha, Shogakukan, Marvel, DC). GeekVS opera como un archivo enciclopédico sin fines de lucro.
+          </p>
+          <div class="footer-sources-tags">
+            <span class="source-tag">Oficial Databooks</span>
+            <span class="source-tag">Vivre Cards</span>
+            <span class="source-tag">Manga Canónico</span>
+            <span class="source-tag">Comics Earth-616</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra Inferior de Copyright & Redes -->
+      <div class="footer-bottom-bar">
+        <div class="footer-copyright">
+          <span>© 2026 GEEKVS ARCHIVE. Desarrollado con ❤️ para la comunidad geek y del powerscaling.</span>
+        </div>
+        <div class="footer-social-links">
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" class="social-link" title="Síguenos en X (Twitter)">𝕏 Twitter</a>
+          <a href="https://reddit.com" target="_blank" rel="noopener noreferrer" class="social-link" title="Comunidad en Reddit">Reddit</a>
+          <a href="https://discord.com" target="_blank" rel="noopener noreferrer" class="social-link" title="Servidor de Discord">Discord</a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-link" title="Repositorio en GitHub">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- Script principal del juego -->
   <script type="module" src="app.js"></script>
