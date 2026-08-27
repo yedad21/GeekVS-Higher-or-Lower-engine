@@ -1,7 +1,7 @@
 /**
  * Controlador principal del juego GeekVS (ES6 Module)
- * Conecta el motor de calculo con la interfaz visual, fondos con GIFs dinámicos
- * y modal interactivo de Justificación Canónica Cyber-Anime.
+ * Conecta el motor de calculo con la interfaz visual, fondos con GIFs dinámicos,
+ * modal interactivo de Justificación Canónica Cyber-Anime y Cosmic Tier List.
  */
 
 import { cargarCatalogo, calcularScore, FACTOR_ALPHA } from './powerEngine.js';
@@ -11,12 +11,27 @@ const STORAGE_HIGH_SCORE_KEY = 'geekvs_high_score';
 const ANIMATION_DURATION_MS = 900;
 const ROUND_TRANSITION_DELAY_MS = 1400;
 
+// Configuración de los 5 Tiers Canónicos
+const TIERS_CONFIG = [
+  { id: 'god', name: 'TIER GOD', rangeText: 'Score ≥ 20.000', min: 20000, max: Infinity, class: 'tier-god' },
+  { id: 'sss', name: 'TIER SSS', rangeText: 'Score 10.000 - 19.999', min: 10000, max: 19999, class: 'tier-sss' },
+  { id: 's', name: 'TIER S', rangeText: 'Score 4.000 - 9.999', min: 4000, max: 9999, class: 'tier-s' },
+  { id: 'a', name: 'TIER A', rangeText: 'Score 1.500 - 3.999', min: 1500, max: 3999, class: 'tier-a' },
+  { id: 'b', name: 'TIER B', rangeText: 'Score < 1.500', min: 0, max: 1499, class: 'tier-b' }
+];
+
 // 2. Catalogo en memoria (se puebla asincronamente)
 let catalogo = [];
 let mapaCatalogo = new Map();
 
 // 3. Mapeo de elementos del DOM
 const dom = {
+  // Navegación táctica
+  navBtnGame: document.getElementById('nav-btn-game'),
+  navBtnTierlist: document.getElementById('nav-btn-tierlist'),
+  viewGame: document.getElementById('view-game'),
+  viewTierlist: document.getElementById('view-tierlist'),
+
   // Marcadores de cabecera
   currentStreak: document.getElementById('current-streak'),
   highScore: document.getElementById('high-score'),
@@ -62,17 +77,48 @@ const dom = {
   modalRivalsSummary: document.getElementById('modal-rivals-summary'),
   modalRivalsList: document.getElementById('modal-rivals-list'),
   modalTechniquesList: document.getElementById('modal-techniques-list'),
-  modalCharNarrative: document.getElementById('modal-char-narrative')
+  modalCharNarrative: document.getElementById('modal-char-narrative'),
+
+  // Tier List & Roster
+  tierlistTotalCount: document.getElementById('tierlist-total-count'),
+  inputSearchCharacter: document.getElementById('input-search-character'),
+  btnClearSearch: document.getElementById('btn-clear-search'),
+  selectUniverseFilter: document.getElementById('select-universe-filter'),
+  tierlistRowsWrapper: document.getElementById('tierlist-rows-wrapper')
 };
 
-// 4. Estado de la partida
+// 4. Estado de la partida y aplicación
 const state = {
+  activeView: 'view-game',
   streak: 0,
   highScore: parseInt(localStorage.getItem(STORAGE_HIGH_SCORE_KEY), 10) || 0,
   characterA: null,
   characterB: null,
-  isProcessing: false
+  isProcessing: false,
+  searchTerm: '',
+  selectedUniverse: 'all'
 };
+
+/**
+ * Cambia la vista activa de la SPA entre Higher or Lower y Tier List.
+ * @param {string} viewId - ID de la vista objetivo ('view-game' | 'view-tierlist').
+ */
+function cambiarVista(viewId) {
+  state.activeView = viewId;
+
+  if (viewId === 'view-game') {
+    dom.navBtnGame.classList.add('active');
+    dom.navBtnTierlist.classList.remove('active');
+    dom.viewGame.classList.remove('hidden');
+    dom.viewTierlist.classList.add('hidden');
+  } else if (viewId === 'view-tierlist') {
+    dom.navBtnTierlist.classList.add('active');
+    dom.navBtnGame.classList.remove('active');
+    dom.viewTierlist.classList.remove('hidden');
+    dom.viewGame.classList.add('hidden');
+    renderizarTierList();
+  }
+}
 
 /**
  * Obtiene un personaje aleatorio del catalogo excluyendo IDs especificos.
@@ -342,6 +388,125 @@ async function manejarEleccion(esMayor) {
 }
 
 /**
+ * Renderiza la Tier List clasificando a los personajes en los tiers correspondientes.
+ */
+function renderizarTierList() {
+  if (!dom.tierlistRowsWrapper) return;
+
+  // 1. Filtrar personajes por término de búsqueda y obra
+  const termino = state.searchTerm.trim().toLowerCase();
+  const universo = state.selectedUniverse;
+
+  const personajesFiltrados = catalogo.filter((p) => {
+    // Filtro por universo
+    const cumpleUniverso = universo === 'all' || p.obra === universo;
+
+    // Filtro por término (nombre, obra, hazaña o técnicas)
+    const coincideNombre = p.nombre.toLowerCase().includes(termino);
+    const coincideObra = p.obra.toLowerCase().includes(termino);
+    const coincideHazana = (p.hazana_descripcion || '').toLowerCase().includes(termino);
+    const coincideTecnicas = (p.habilidades || []).some((h) => h.toLowerCase().includes(termino));
+
+    return cumpleUniverso && (!termino || coincideNombre || coincideObra || coincideHazana || coincideTecnicas);
+  });
+
+  // Actualizar contador
+  dom.tierlistTotalCount.textContent = personajesFiltrados.length;
+
+  // 2. Limpiar contenedor
+  dom.tierlistRowsWrapper.innerHTML = '';
+
+  // 3. Renderizar cada Tier
+  TIERS_CONFIG.forEach((tier) => {
+    const personajesEnTier = personajesFiltrados
+      .filter((p) => p.scoreFinal >= tier.min && p.scoreFinal <= tier.max)
+      .sort((a, b) => b.scoreFinal - a.scoreFinal);
+
+    // Contenedor de la fila de Tier
+    const rowEl = document.createElement('div');
+    rowEl.className = `tier-row ${tier.class}`;
+
+    // Badge del Tier (Columna Izquierda)
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'tier-badge';
+    badgeEl.innerHTML = `
+      <span class="tier-badge-title">${tier.name}</span>
+      <span class="tier-badge-range">${tier.rangeText}</span>
+    `;
+
+    // Cuadrícula de Avatares / Roster (Columna Derecha)
+    const gridEl = document.createElement('div');
+    gridEl.className = 'tier-roster-grid';
+
+    if (personajesEnTier.length > 0) {
+      personajesEnTier.forEach((personaje) => {
+        const card = document.createElement('div');
+        card.className = 'roster-card';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('title', `Click para ver Desglose Canónico de ${personaje.nombre}`);
+        
+        const avatarUrl = personaje.gif_collage || personaje.imagen;
+
+        card.innerHTML = `
+          <div class="roster-card-bg" style="background-image: url('${avatarUrl}')"></div>
+          <div class="roster-card-overlay"></div>
+          <span class="roster-card-score">${formatearPoder(personaje.scoreFinal)}</span>
+          <div class="roster-card-info">
+            <span class="roster-card-name">${personaje.nombre}</span>
+            <span class="roster-card-origin">${personaje.obra}</span>
+          </div>
+          <span class="roster-card-inspect-hint">⚡ Desglose</span>
+        `;
+
+        // Evento de clic en la tarjeta del Roster para abrir el modal de desglose
+        card.addEventListener('click', () => {
+          abrirModalDesglose(personaje);
+        });
+
+        // Soporte de accesibilidad con teclado (Enter o Espacio)
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            abrirModalDesglose(personaje);
+          }
+        });
+
+        gridEl.appendChild(card);
+      });
+    } else {
+      const emptyMsg = document.createElement('span');
+      emptyMsg.className = 'tier-empty-msg';
+      emptyMsg.textContent = 'Sin combatientes registrados en este rango.';
+      gridEl.appendChild(emptyMsg);
+    }
+
+    rowEl.appendChild(badgeEl);
+    rowEl.appendChild(gridEl);
+    dom.tierlistRowsWrapper.appendChild(rowEl);
+  });
+}
+
+/**
+ * Inicializa las opciones del filtro de universos en base al catálogo.
+ */
+function poblarFiltroUniversos() {
+  if (!dom.selectUniverseFilter) return;
+
+  const universosUnicos = Array.from(new Set(catalogo.map((p) => p.obra))).filter(Boolean);
+  
+  // Limpiar preservando "Todas las obras"
+  dom.selectUniverseFilter.innerHTML = '<option value="all">Todas las obras</option>';
+
+  universosUnicos.forEach((obra) => {
+    const opt = document.createElement('option');
+    opt.value = obra;
+    opt.textContent = obra;
+    dom.selectUniverseFilter.appendChild(opt);
+  });
+}
+
+/**
  * Inicia o reinicia una partida completa.
  */
 export function iniciarPartida() {
@@ -363,7 +528,7 @@ export function iniciarPartida() {
   state.characterA = obtenerPersonajeAleatorio();
   state.characterB = obtenerPersonajeAleatorio([state.characterA.id]);
 
-  // Renderizar vistas
+  // Renderizar vistas del juego
   renderizarTarjetaA();
   renderizarTarjetaB();
 }
@@ -375,6 +540,8 @@ async function inicializarApp() {
   try {
     catalogo = await cargarCatalogo('./characters.json');
     mapaCatalogo = new Map(catalogo.map((p) => [p.id, p]));
+    
+    poblarFiltroUniversos();
     iniciarPartida();
   } catch (error) {
     console.error('[GeekVS] Error critico en la inicializacion:', error);
@@ -382,11 +549,17 @@ async function inicializarApp() {
 }
 
 // 5. Asignacion de Event Listeners
+
+// Navegación de vistas
+dom.navBtnGame.addEventListener('click', () => cambiarVista('view-game'));
+dom.navBtnTierlist.addEventListener('click', () => cambiarVista('view-tierlist'));
+
+// Botones de acción del juego
 dom.btnHigher.addEventListener('click', () => manejarEleccion(true));
 dom.btnLower.addEventListener('click', () => manejarEleccion(false));
 dom.btnRestart.addEventListener('click', () => iniciarPartida());
 
-// Event Listeners para Desglose Canónico
+// Event Listeners para Desglose Canónico en el juego
 dom.btnBreakdownA.addEventListener('click', (e) => {
   e.stopPropagation();
   abrirModalDesglose(state.characterA);
@@ -411,6 +584,29 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !dom.modalBreakdown.classList.contains('hidden')) {
     cerrarModalDesglose();
   }
+});
+
+// Filtros y búsqueda en tiempo real de la Tier List
+dom.inputSearchCharacter.addEventListener('input', (e) => {
+  state.searchTerm = e.target.value;
+  if (state.searchTerm) {
+    dom.btnClearSearch.classList.remove('hidden');
+  } else {
+    dom.btnClearSearch.classList.add('hidden');
+  }
+  renderizarTierList();
+});
+
+dom.btnClearSearch.addEventListener('click', () => {
+  dom.inputSearchCharacter.value = '';
+  state.searchTerm = '';
+  dom.btnClearSearch.classList.add('hidden');
+  renderizarTierList();
+});
+
+dom.selectUniverseFilter.addEventListener('change', (e) => {
+  state.selectedUniverse = e.target.value;
+  renderizarTierList();
 });
 
 // 6. Arranque automatico con carga asincrona de datos

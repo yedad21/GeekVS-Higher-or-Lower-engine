@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GeekVS - Juego interactivo de Higher or Lower basado en niveles de poder ficticios de anime y cómics con cálculo de poder transitivo y justificación canónica.">
-  <title>GeekVS - Higher or Lower: Power Levels & Canonical Breakdown</title>
+  <meta name="description" content="GeekVS - Juego interactivo de Higher or Lower y Cosmic Tier List canónica de niveles de poder con cálculo transitivo y justificación canónica.">
+  <title>GeekVS - Higher or Lower & Cosmic Tier List</title>
   
   <!-- Google Fonts: Orbitron & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,16 +15,34 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header Bar -->
+  <!-- Header Bar & Tactical Cyber-Anime Navigation -->
   <header class="game-header">
     <div class="brand">
       <h1 class="logo-title">GEEK<span class="highlight">VS</span></h1>
-      <span class="logo-subtitle">POWER LEVEL & COMBAT ARCHIVE</span>
+      <span class="logo-subtitle">CANONICAL COMBAT ARCHIVE</span>
     </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="tactical-nav" id="main-nav" aria-label="Navegación principal">
+      <button class="nav-tab active" id="nav-btn-game" data-view="view-game" aria-label="Vista Higher or Lower">
+        <span class="nav-tab-icon">🎮</span>
+        <span class="nav-tab-text">Higher or Lower</span>
+      </button>
+      <button class="nav-tab" id="nav-btn-tierlist" data-view="view-tierlist" aria-label="Vista Tier List y Roster">
+        <span class="nav-tab-icon">🏆</span>
+        <span class="nav-tab-text">Tier List & Roster</span>
+      </button>
+      <button class="nav-tab nav-tab-disabled" id="nav-btn-fight" disabled aria-disabled="true" title="Modo Duelo 1v1 - Próximamente en Fase 3">
+        <span class="nav-tab-icon">⚔️</span>
+        <span class="nav-tab-text">Pick a Fight</span>
+        <span class="nav-tab-badge">FASE 3</span>
+      </button>
+    </nav>
     
-    <div class="scoreboard">
+    <!-- Scoreboard (Visible in Game mode) -->
+    <div class="scoreboard" id="game-scoreboard">
       <div class="score-pill current-streak-box">
-        <span class="score-label">Racha actual</span>
+        <span class="score-label">Racha</span>
         <span id="current-streak" class="score-val">0</span>
       </div>
       <div class="score-pill high-score-box">
@@ -34,88 +52,142 @@
     </div>
   </header>
 
-  <!-- Main Game Arena -->
-  <main class="game-arena" id="game-arena">
-    <!-- Tarjeta A (Izquierda / Referencia) -->
-    <section class="character-card card-reference" id="card-a">
-      <div class="card-bg-container">
-        <div class="card-bg" id="card-a-bg"></div>
-        <div class="card-overlay"></div>
-        <div class="card-scanline"></div>
-      </div>
-      
-      <div class="card-content">
-        <div class="card-header-meta">
-          <span class="card-tag">REFERENCIA</span>
-          <button id="btn-breakdown-a" class="btn-breakdown" aria-label="Ver Desglose Canónico de Tarjeta A">
-            <span class="btn-breakdown-icon">ℹ️</span>
-            <span class="btn-breakdown-text">Desglose Canónico</span>
-          </button>
+  <!-- =========================================================================
+       VIEW 1: HIGHER OR LOWER GAME ARENA
+       ========================================================================= -->
+  <main class="game-view view-active" id="view-game">
+    <div class="game-arena" id="game-arena">
+      <!-- Tarjeta A (Izquierda / Referencia) -->
+      <section class="character-card card-reference" id="card-a">
+        <div class="card-bg-container">
+          <div class="card-bg" id="card-a-bg"></div>
+          <div class="card-overlay"></div>
+          <div class="card-scanline"></div>
         </div>
-
-        <h2 class="character-name" id="card-a-name">---</h2>
-        <p class="character-origin" id="card-a-origin">---</p>
         
-        <div class="power-display">
-          <span class="power-label">Nivel de Amenaza</span>
-          <div class="power-number" id="card-a-power">0</div>
-          <span class="power-unit">Puntos de Poder</span>
-        </div>
-      </div>
-    </section>
+        <div class="card-content">
+          <div class="card-header-meta">
+            <span class="card-tag">REFERENCIA</span>
+            <button id="btn-breakdown-a" class="btn-breakdown" aria-label="Ver Desglose Canónico de Tarjeta A">
+              <span class="btn-breakdown-icon">ℹ️</span>
+              <span class="btn-breakdown-text">Desglose Canónico</span>
+            </button>
+          </div>
 
-    <!-- Insignia Central VS -->
-    <div class="vs-badge" id="vs-badge">
-      <div class="vs-glow"></div>
-      <span class="vs-text">VS</span>
-    </div>
-
-    <!-- Tarjeta B (Derecha / Adivinanza) -->
-    <section class="character-card card-guess" id="card-b">
-      <div class="card-bg-container">
-        <div class="card-bg" id="card-b-bg"></div>
-        <div class="card-overlay"></div>
-        <div class="card-scanline"></div>
-      </div>
-      
-      <div class="card-content">
-        <div class="card-header-meta">
-          <span class="card-tag tag-target">DESAFÍO</span>
-          <button id="btn-breakdown-b" class="btn-breakdown hidden" aria-label="Ver Desglose Canónico de Tarjeta B">
-            <span class="btn-breakdown-icon">ℹ️</span>
-            <span class="btn-breakdown-text">Desglose Canónico</span>
-          </button>
-        </div>
-
-        <h2 class="character-name" id="card-b-name">---</h2>
-        <p class="character-origin" id="card-b-origin">---</p>
-        
-        <p class="guess-prompt" id="guess-prompt-text">¿Tiene un nivel de poder...</p>
-        
-        <!-- Controles de Adivinanza -->
-        <div class="guess-controls" id="guess-controls">
-          <button id="btn-higher" class="btn-action btn-higher" aria-label="Mayor nivel de poder">
-            <span class="btn-icon">▲</span>
-            <span class="btn-text">MAYOR (HIGHER)</span>
-          </button>
+          <h2 class="character-name" id="card-a-name">---</h2>
+          <p class="character-origin" id="card-a-origin">---</p>
           
-          <button id="btn-lower" class="btn-action btn-lower" aria-label="Menor nivel de poder">
-            <span class="btn-icon">▼</span>
-            <span class="btn-text">MENOR (LOWER)</span>
-          </button>
+          <div class="power-display">
+            <span class="power-label">Nivel de Amenaza</span>
+            <div class="power-number" id="card-a-power">0</div>
+            <span class="power-unit">Puntos de Poder</span>
+          </div>
         </div>
+      </section>
 
-        <!-- Contenedor de Puntaje Revelado (Oculto inicialmente) -->
-        <div class="power-display hidden" id="card-b-power-container">
-          <span class="power-label">Nivel de Amenaza</span>
-          <div class="power-number" id="card-b-power">0</div>
-          <span class="power-unit">Puntos de Poder</span>
-        </div>
+      <!-- Insignia Central VS -->
+      <div class="vs-badge" id="vs-badge">
+        <div class="vs-glow"></div>
+        <span class="vs-text">VS</span>
       </div>
-    </section>
+
+      <!-- Tarjeta B (Derecha / Adivinanza) -->
+      <section class="character-card card-guess" id="card-b">
+        <div class="card-bg-container">
+          <div class="card-bg" id="card-b-bg"></div>
+          <div class="card-overlay"></div>
+          <div class="card-scanline"></div>
+        </div>
+        
+        <div class="card-content">
+          <div class="card-header-meta">
+            <span class="card-tag tag-target">DESAFÍO</span>
+            <button id="btn-breakdown-b" class="btn-breakdown hidden" aria-label="Ver Desglose Canónico de Tarjeta B">
+              <span class="btn-breakdown-icon">ℹ️</span>
+              <span class="btn-breakdown-text">Desglose Canónico</span>
+            </button>
+          </div>
+
+          <h2 class="character-name" id="card-b-name">---</h2>
+          <p class="character-origin" id="card-b-origin">---</p>
+          
+          <p class="guess-prompt" id="guess-prompt-text">¿Tiene un nivel de poder...</p>
+          
+          <!-- Controles de Adivinanza -->
+          <div class="guess-controls" id="guess-controls">
+            <button id="btn-higher" class="btn-action btn-higher" aria-label="Mayor nivel de poder">
+              <span class="btn-icon">▲</span>
+              <span class="btn-text">MAYOR (HIGHER)</span>
+            </button>
+            
+            <button id="btn-lower" class="btn-action btn-lower" aria-label="Menor nivel de poder">
+              <span class="btn-icon">▼</span>
+              <span class="btn-text">MENOR (LOWER)</span>
+            </button>
+          </div>
+
+          <!-- Contenedor de Puntaje Revelado (Oculto inicialmente) -->
+          <div class="power-display hidden" id="card-b-power-container">
+            <span class="power-label">Nivel de Amenaza</span>
+            <div class="power-number" id="card-b-power">0</div>
+            <span class="power-unit">Puntos de Poder</span>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <!-- Modal Desglose Canónico (Cyber-Anime UI) -->
+  <!-- =========================================================================
+       VIEW 2: COSMIC TIER LIST & ROSTER
+       ========================================================================= -->
+  <section class="game-view tierlist-view hidden" id="view-tierlist">
+    <div class="tierlist-container">
+      
+      <!-- Cabecera de la Tier List -->
+      <header class="tierlist-header-banner">
+        <div class="tierlist-title-group">
+          <div class="tierlist-system-badge">
+            <span class="system-dot"></span>
+            <span>DATABASE TRANSITIVA O(1) • FACTOR DE HERENCIA α = 0.5</span>
+          </div>
+          <h2 class="tierlist-title">COSMIC TIER LIST</h2>
+          <p class="tierlist-desc">
+            Jerarquía oficial de poder canónico calculada mediante el algoritmo recursivo de GeekVS. Cada posición contempla bajas confirmadas, bonos de hazaña de escala y la energía residual heredada de rivales derrotados.
+          </p>
+        </div>
+
+        <div class="tierlist-stats-counter">
+          <span class="stats-counter-number" id="tierlist-total-count">0</span>
+          <span class="stats-counter-label">Combatientes en Archivo</span>
+        </div>
+      </header>
+
+      <!-- Barra de Herramientas (Buscador y Filtro) -->
+      <div class="tierlist-toolbar">
+        <div class="search-box-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="input-search-character" class="cyber-input" placeholder="Buscar por personaje, hazaña o técnica..." autocomplete="off">
+          <button id="btn-clear-search" class="btn-clear-search hidden" aria-label="Limpiar búsqueda">✕</button>
+        </div>
+
+        <div class="filter-box-container">
+          <span class="filter-icon">🌌</span>
+          <select id="select-universe-filter" class="cyber-select" aria-label="Filtrar por obra">
+            <option value="all">Todas las obras</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Contenedor Principal de Tiers -->
+      <div class="tierlist-rows-wrapper" id="tierlist-rows-wrapper">
+        <!-- Generado dinámicamente: TIER GOD, SSS, S, A, B -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       MODAL DESGLOSE CANÓNICO (Cyber-Anime UI)
+       ========================================================================= -->
   <div class="modal-cyber-overlay hidden" id="modal-breakdown" role="dialog" aria-modal="true" aria-labelledby="modal-char-name">
     <div class="modal-cyber-dialog">
       <!-- Glow ambient background -->
@@ -219,12 +291,14 @@
 
       <!-- Modal Footer -->
       <footer class="modal-cyber-footer">
-        <button id="btn-modal-accept" class="btn-modal-action">ENTENDIDO / VOLVER AL COMBATE</button>
+        <button id="btn-modal-accept" class="btn-modal-action">ENTENDIDO / VOLVER AL ARCHIVO</button>
       </footer>
     </div>
   </div>
 
-  <!-- Modal / Overlay de Game Over -->
+  <!-- =========================================================================
+       MODAL GAME OVER
+       ========================================================================= -->
   <div class="game-over-overlay hidden" id="game-over-modal" role="dialog" aria-modal="true" aria-labelledby="game-over-title">
     <div class="game-over-dialog">
       <div class="game-over-icon">💥</div>

@@ -1,6 +1,6 @@
 /* ==========================================================================
-   GeekVS - Higher or Lower: Power Levels Stylesheet
-   Theme: Cyber-Anime High-Tech Arena & Canonical Combat Archive
+   GeekVS - Higher or Lower & Cosmic Tier List Stylesheet
+   Theme: Cyber-Anime High-Tech Tactical Arena & Canonical Combat Archive
    ========================================================================== */
 
 :root {
@@ -8,7 +8,7 @@
   --bg-primary: #06080d;
   --bg-surface: rgba(14, 20, 32, 0.78);
   --bg-card-overlay: linear-gradient(180deg, rgba(6, 8, 13, 0.55) 0%, rgba(6, 8, 13, 0.92) 100%);
-  --bg-modal: rgba(10, 15, 26, 0.95);
+  --bg-modal: rgba(10, 15, 26, 0.96);
   
   --accent-cyan: #00f3ff;
   --accent-cyan-glow: rgba(0, 243, 255, 0.45);
@@ -17,6 +17,18 @@
   --accent-yellow: #ffc800;
   --accent-yellow-glow: rgba(255, 200, 0, 0.4);
   --accent-purple: #9d4edd;
+
+  /* Tier List specific colors */
+  --tier-god-color: #ffd700;
+  --tier-god-glow: rgba(255, 215, 0, 0.45);
+  --tier-sss-color: #ff0055;
+  --tier-sss-glow: rgba(255, 0, 85, 0.45);
+  --tier-s-color: #a855f7;
+  --tier-s-glow: rgba(168, 85, 247, 0.45);
+  --tier-a-color: #00f3ff;
+  --tier-a-glow: rgba(0, 243, 255, 0.45);
+  --tier-b-color: #00e676;
+  --tier-b-glow: rgba(0, 230, 118, 0.45);
   
   --btn-higher-base: #00e676;
   --btn-higher-hover: #00ff88;
@@ -52,7 +64,7 @@
 html, body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-x: hidden;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-body);
@@ -64,15 +76,16 @@ body {
   flex-direction: column;
   position: relative;
   user-select: none;
+  min-height: 100vh;
 }
 
-/* Custom Scrollbar for Modals and Arena */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(8, 12, 20, 0.8);
+  background: rgba(6, 8, 13, 0.95);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--accent-cyan);
@@ -80,36 +93,39 @@ body {
 }
 
 /* ==========================================================================
-   Header Bar
+   Header Bar & Tactical Cyber-Anime Navigation
    ========================================================================== */
 .game-header {
-  position: absolute;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 50;
-  height: 72px;
+  z-index: 100;
+  min-height: 74px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  background: linear-gradient(180deg, rgba(6, 8, 13, 0.98) 0%, rgba(6, 8, 13, 0) 100%);
-  pointer-events: none;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(180deg, rgba(6, 8, 13, 0.98) 0%, rgba(10, 15, 24, 0.92) 100%);
+  border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+  backdrop-filter: blur(16px);
+  gap: 1.5rem;
 }
 
 .brand {
   display: flex;
   flex-direction: column;
-  pointer-events: auto;
+  flex-shrink: 0;
 }
 
 .logo-title {
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   font-weight: 900;
   letter-spacing: 2px;
   color: var(--text-primary);
   text-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+  line-height: 1.1;
 }
 
 .logo-title .highlight {
@@ -119,33 +135,95 @@ body {
 
 .logo-subtitle {
   font-family: var(--font-display);
-  font-size: 0.625rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2.5px;
   color: var(--accent-cyan);
   text-transform: uppercase;
 }
 
+/* Tactical Navigation Tabs */
+.tactical-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(14, 20, 32, 0.85);
+  padding: 0.35rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.nav-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.nav-tab:hover:not(:disabled) {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-tab.active {
+  color: #03141f;
+  background: linear-gradient(135deg, var(--accent-cyan) 0%, #00a2ff 100%);
+  font-weight: 800;
+  box-shadow: 0 0 18px var(--accent-cyan-glow);
+  border-color: var(--accent-cyan);
+}
+
+.nav-tab-disabled {
+  opacity: 0.45;
+  cursor: not-allowed !important;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-tab-badge {
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  background: rgba(255, 0, 85, 0.2);
+  border: 1px solid rgba(255, 0, 85, 0.4);
+  color: var(--accent-magenta);
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Scoreboard */
 .scoreboard {
   display: flex;
-  gap: 1rem;
-  pointer-events: auto;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .score-pill {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.45rem 1.1rem;
+  gap: 0.65rem;
+  padding: 0.4rem 0.95rem;
   background: rgba(14, 20, 32, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
   backdrop-filter: blur(12px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .score-label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -154,10 +232,10 @@ body {
 
 .score-val {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--accent-cyan);
-  min-width: 1.5rem;
+  min-width: 1.2rem;
   text-align: right;
 }
 
@@ -166,12 +244,26 @@ body {
 }
 
 /* ==========================================================================
-   Game Arena (Cards 50/50 Split)
+   SPA View Switching
+   ========================================================================== */
+.game-view {
+  width: 100%;
+  flex: 1 1 auto;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.game-view.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   VIEW 1: Game Arena (50/50 Split)
    ========================================================================== */
 .game-arena {
   position: relative;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 74px);
   display: flex;
   flex-direction: row;
 }
@@ -415,9 +507,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ==========================================================================
-   Central VS Badge
-   ========================================================================== */
+/* Central VS Badge */
 .vs-badge {
   position: absolute;
   top: 50%;
@@ -457,9 +547,7 @@ body {
   text-shadow: 0 0 10px var(--accent-cyan);
 }
 
-/* ==========================================================================
-   Action Buttons (Higher / Lower)
-   ========================================================================== */
+/* Higher / Lower Action Buttons */
 .guess-controls {
   display: flex;
   flex-direction: column;
@@ -494,7 +582,6 @@ body {
   transition: transform var(--transition-fast);
 }
 
-/* Higher Button */
 .btn-higher {
   background: linear-gradient(135deg, rgba(0, 230, 118, 0.15) 0%, rgba(0, 230, 118, 0.3) 100%);
   border-color: var(--btn-higher-base);
@@ -512,7 +599,6 @@ body {
   transform: translateY(-2px);
 }
 
-/* Lower Button */
 .btn-lower {
   background: linear-gradient(135deg, rgba(255, 23, 68, 0.15) 0%, rgba(255, 23, 68, 0.3) 100%);
   border-color: var(--btn-lower-base);
@@ -532,6 +618,496 @@ body {
 
 .btn-action:active {
   transform: translateY(0) scale(0.98);
+}
+
+/* ==========================================================================
+   VIEW 2: Cosmic Tier List & Roster
+   ========================================================================== */
+.tierlist-view {
+  min-height: calc(100vh - 74px);
+  background: radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.05) 0%, transparent 60%),
+              radial-gradient(circle at 100% 100%, rgba(255, 0, 85, 0.04) 0%, transparent 50%),
+              var(--bg-primary);
+  padding: 2.5rem 2rem 5rem;
+  overflow-y: auto;
+}
+
+.tierlist-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  animation: fadeIn 0.35s ease-out;
+}
+
+/* Tier List Header Banner */
+.tierlist-header-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 2rem 2.25rem;
+  background: linear-gradient(135deg, rgba(14, 20, 32, 0.85) 0%, rgba(8, 12, 20, 0.95) 100%);
+  border: 1px solid rgba(0, 243, 255, 0.25);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.tierlist-header-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(0, 243, 255, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.tierlist-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 780px;
+  position: relative;
+  z-index: 1;
+}
+
+.tierlist-system-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+}
+
+.system-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+.tierlist-title {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.tierlist-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.tierlist-stats-counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 243, 255, 0.08);
+  border: 1px solid rgba(0, 243, 255, 0.35);
+  border-radius: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+}
+
+.stats-counter-number {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: var(--accent-cyan);
+  line-height: 1;
+  text-shadow: 0 0 15px var(--accent-cyan-glow);
+}
+
+.stats-counter-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+  text-align: center;
+}
+
+/* Tier List Toolbar */
+.tierlist-toolbar {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.search-box-container {
+  position: relative;
+  flex: 1 1 320px;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.1rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.cyber-input {
+  width: 100%;
+  padding: 0.9rem 2.75rem 0.9rem 2.85rem;
+  background: rgba(14, 20, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+}
+
+.cyber-input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 18px var(--accent-cyan-glow);
+  background: rgba(18, 26, 42, 0.95);
+}
+
+.cyber-input::placeholder {
+  color: var(--text-muted);
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.btn-clear-search:hover {
+  color: var(--accent-magenta);
+}
+
+.filter-box-container {
+  position: relative;
+  flex: 0 1 280px;
+  display: flex;
+  align-items: center;
+}
+
+.filter-icon {
+  position: absolute;
+  left: 1.1rem;
+  font-size: 0.95rem;
+  color: var(--accent-cyan);
+  pointer-events: none;
+}
+
+.cyber-select {
+  width: 100%;
+  padding: 0.9rem 1.5rem 0.9rem 2.85rem;
+  background: rgba(14, 20, 32, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+}
+
+.cyber-select:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 18px var(--accent-cyan-glow);
+}
+
+.cyber-select option {
+  background: #0d131f;
+  color: #ffffff;
+}
+
+/* Tier List Rows */
+.tierlist-rows-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tier-row {
+  display: flex;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(10, 15, 24, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  min-height: 160px;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tier-row:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Tier Badges (Left Column) */
+.tier-badge {
+  flex: 0 0 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.tier-badge-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+.tier-badge-range {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-top: 0.4rem;
+  opacity: 0.85;
+}
+
+/* Specific Tier Styles */
+.tier-god {
+  border-color: rgba(255, 215, 0, 0.4);
+}
+.tier-god .tier-badge {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.35) 0%, rgba(218, 165, 32, 0.2) 100%);
+  border-right: 2px solid var(--tier-god-color);
+  color: var(--tier-god-color);
+  box-shadow: inset 0 0 30px rgba(255, 215, 0, 0.15);
+}
+
+.tier-sss {
+  border-color: rgba(255, 0, 85, 0.4);
+}
+.tier-sss .tier-badge {
+  background: linear-gradient(135deg, rgba(255, 0, 85, 0.35) 0%, rgba(180, 0, 60, 0.2) 100%);
+  border-right: 2px solid var(--tier-sss-color);
+  color: var(--tier-sss-color);
+  box-shadow: inset 0 0 30px rgba(255, 0, 85, 0.15);
+}
+
+.tier-s {
+  border-color: rgba(168, 85, 247, 0.4);
+}
+.tier-s .tier-badge {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.35) 0%, rgba(120, 50, 200, 0.2) 100%);
+  border-right: 2px solid var(--tier-s-color);
+  color: var(--tier-s-color);
+  box-shadow: inset 0 0 30px rgba(168, 85, 247, 0.15);
+}
+
+.tier-a {
+  border-color: rgba(0, 243, 255, 0.4);
+}
+.tier-a .tier-badge {
+  background: linear-gradient(135deg, rgba(0, 243, 255, 0.35) 0%, rgba(0, 150, 220, 0.2) 100%);
+  border-right: 2px solid var(--tier-a-color);
+  color: var(--tier-a-color);
+  box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.15);
+}
+
+.tier-b {
+  border-color: rgba(0, 230, 118, 0.4);
+}
+.tier-b .tier-badge {
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.35) 0%, rgba(0, 160, 80, 0.2) 100%);
+  border-right: 2px solid var(--tier-b-color);
+  color: var(--tier-b-color);
+  box-shadow: inset 0 0 30px rgba(0, 230, 118, 0.15);
+}
+
+/* Tier Characters Roster Grid (Right Column) */
+.tier-roster-grid {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem;
+  align-items: center;
+  align-content: center;
+  background: rgba(8, 12, 20, 0.6);
+}
+
+/* Smash Bros / Fighter Select Avatar Card */
+.roster-card {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: #080c14;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
+}
+
+.roster-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  z-index: 10;
+}
+
+.tier-god .roster-card:hover {
+  border-color: var(--tier-god-color);
+  box-shadow: 0 10px 25px var(--tier-god-glow);
+}
+.tier-sss .roster-card:hover {
+  border-color: var(--tier-sss-color);
+  box-shadow: 0 10px 25px var(--tier-sss-glow);
+}
+.tier-s .roster-card:hover {
+  border-color: var(--tier-s-color);
+  box-shadow: 0 10px 25px var(--tier-s-glow);
+}
+.tier-a .roster-card:hover {
+  border-color: var(--tier-a-color);
+  box-shadow: 0 10px 25px var(--tier-a-glow);
+}
+.tier-b .roster-card:hover {
+  border-color: var(--tier-b-color);
+  box-shadow: 0 10px 25px var(--tier-b-glow);
+}
+
+.roster-card-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.4s ease;
+}
+
+.roster-card:hover .roster-card-bg {
+  transform: scale(1.12);
+}
+
+.roster-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(6, 8, 13, 0.2) 0%, rgba(6, 8, 13, 0.95) 100%);
+  z-index: 1;
+}
+
+.roster-card-score {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 0.15rem 0.4rem;
+  background: rgba(6, 8, 13, 0.85);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--accent-yellow);
+  backdrop-filter: blur(4px);
+}
+
+.roster-card-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0.4rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.roster-card-name {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.roster-card-origin {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--accent-cyan);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.roster-card-inspect-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  z-index: 3;
+  opacity: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: #ffffff;
+  background: rgba(0, 243, 255, 0.85);
+  color: #03141f;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.roster-card:hover .roster-card-inspect-hint {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Empty Tier state */
+.tier-empty-msg {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 1rem;
 }
 
 /* ==========================================================================
@@ -1100,29 +1676,30 @@ body {
 /* ==========================================================================
    Responsive Design (Mobile Breakpoint)
    ========================================================================== */
-@media (max-width: 868px) {
-  html, body {
-    overflow-y: auto;
-    height: auto;
-    min-height: 100vh;
-  }
-
+@media (max-width: 992px) {
   .game-header {
-    position: sticky;
-    padding: 0 1rem;
-    height: 64px;
-    background: rgba(6, 8, 13, 0.98);
-    backdrop-filter: blur(10px);
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
   }
 
-  .logo-title {
-    font-size: 1.35rem;
+  .tactical-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    overflow-x: auto;
   }
 
+  .scoreboard {
+    order: 2;
+  }
+}
+
+@media (max-width: 868px) {
   .game-arena {
     flex-direction: column;
     height: auto;
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - 120px);
   }
 
   .character-card {
@@ -1157,6 +1734,43 @@ body {
 
   .vs-text {
     font-size: 1.1rem;
+  }
+
+  /* Tier List Mobile */
+  .tierlist-view {
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .tierlist-header-banner {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .tierlist-stats-counter {
+    width: 100%;
+  }
+
+  .tier-row {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .tier-badge {
+    flex: none;
+    width: 100%;
+    padding: 0.75rem;
+    border-right: none !important;
+    border-bottom: 2px solid;
+  }
+
+  .tier-god .tier-badge { border-bottom-color: var(--tier-god-color); }
+  .tier-sss .tier-badge { border-bottom-color: var(--tier-sss-color); }
+  .tier-s .tier-badge { border-bottom-color: var(--tier-s-color); }
+  .tier-a .tier-badge { border-bottom-color: var(--tier-a-color); }
+  .tier-b .tier-badge { border-bottom-color: var(--tier-b-color); }
+
+  .tier-roster-grid {
+    justify-content: center;
   }
 
   .breakdown-grid {
