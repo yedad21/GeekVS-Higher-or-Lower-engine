@@ -1,16 +1,122 @@
 /**
- * Motor de Audio Sintético Nativo (Web Audio API) para GeekVS
- * Cero dependencias externas - Generación procedural de audio táctico cyber-anime
+ * Motor de Audio Sintético Nativo (Web Audio API) y Reproductor de Bandas Sonoras para GeekVS
+ * Cero dependencias externas - Generación procedural de audio táctico + Theme Player con Fade-in/Fade-out
  */
 
 const STORAGE_SOUND_KEY = 'geekvs_sound_enabled';
 
-// Estado interno del motor de audio
+/**
+ * Reproductor dedicado para pistas de música/temas de personajes (CharacterThemePlayer).
+ * Reutiliza una única instancia de HTML5 Audio con fundidos suaves para evitar colisiones.
+ */
+class CharacterThemePlayer {
+  constructor() {
+    this.audio = new Audio();
+    this.audio.preload = 'auto';
+    this.audio.loop = true;
+    this.audio.volume = 0.0;
+    this.currentUrl = '';
+    this.fadeInterval = null;
+    this.targetVolume = 0.35;
+    this.isPlaying = false;
+  }
+
+  /**
+   * Inicia la reproducción con fundido de entrada suave (Fade-in: 0.0 a 0.35 en 250ms).
+   * @param {string} audioUrl - URL del archivo de audio MP3/OGG.
+   * @param {boolean} isEnabled - Estado global de audio del motor.
+   */
+  playCharacterTheme(audioUrl, isEnabled = true) {
+    if (!isEnabled || !audioUrl) {
+      this.stopCharacterTheme();
+      return;
+    }
+
+    if (this.fadeInterval) {
+      clearInterval(this.fadeInterval);
+      this.fadeInterval = null;
+    }
+
+    // Si ya se está reproduciendo exactamente este clip, solo aseguramos el fade in
+    if (this.isPlaying && this.currentUrl === audioUrl && !this.audio.paused) {
+      this.fadeIn();
+      return;
+    }
+
+    this.currentUrl = audioUrl;
+    this.audio.pause();
+    this.audio.currentTime = 0;
+    this.audio.src = audioUrl;
+    this.audio.volume = 0.0;
+
+    const playPromise = this.audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          this.isPlaying = true;
+          this.fadeIn();
+        })
+        .catch((e) => {
+          // Manejo silencioso ante políticas de autoplay o errores de red
+          this.isPlaying = false;
+        });
+    }
+  }
+
+  fadeIn() {
+    if (this.fadeInterval) clearInterval(this.fadeInterval);
+    const stepDuration = 25; // 10 pasos = 250ms
+    const volumeStep = this.targetVolume / 10;
+
+    this.fadeInterval = setInterval(() => {
+      if (this.audio.volume + volumeStep < this.targetVolume) {
+        this.audio.volume = Math.min(this.audio.volume + volumeStep, 1);
+      } else {
+        this.audio.volume = this.targetVolume;
+        clearInterval(this.fadeInterval);
+        this.fadeInterval = null;
+      }
+    }, stepDuration);
+  }
+
+  /**
+   * Ejecuta un fundido de salida suave (Fade-out: 0.35 a 0.0 en 200ms) y pausa el audio.
+   */
+  stopCharacterTheme() {
+    if (!this.isPlaying && this.audio.paused) return;
+
+    if (this.fadeInterval) {
+      clearInterval(this.fadeInterval);
+      this.fadeInterval = null;
+    }
+
+    const stepDuration = 20; // 10 pasos = 200ms
+    const currentVol = this.audio.volume || this.targetVolume;
+    const volumeStep = currentVol / 10;
+
+    this.fadeInterval = setInterval(() => {
+      if (this.audio.volume - volumeStep > 0.01) {
+        this.audio.volume = Math.max(this.audio.volume - volumeStep, 0);
+      } else {
+        this.audio.volume = 0.0;
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.isPlaying = false;
+        this.currentUrl = '';
+        clearInterval(this.fadeInterval);
+        this.fadeInterval = null;
+      }
+    }, stepDuration);
+  }
+}
+
+// Estado interno del motor de audio sintético
 class SoundEngine {
   constructor() {
     this.ctx = null;
     this.masterGain = null;
     this.isEnabled = localStorage.getItem(STORAGE_SOUND_KEY) !== 'false'; // Por defecto ON
+    this.themePlayer = new CharacterThemePlayer();
   }
 
   /**
@@ -41,6 +147,8 @@ class SoundEngine {
     if (this.isEnabled) {
       this.initContext();
       this.playClick();
+    } else {
+      this.stopCharacterTheme();
     }
     return this.isEnabled;
   }
@@ -50,6 +158,21 @@ class SoundEngine {
    */
   isAudioActive() {
     return this.isEnabled;
+  }
+
+  /**
+   * Reproduce el tema musical contextual de un personaje con Fade-in.
+   * @param {string} audioUrl - URL del clip MP3.
+   */
+  playCharacterTheme(audioUrl) {
+    this.themePlayer.playCharacterTheme(audioUrl, this.isEnabled);
+  }
+
+  /**
+   * Detiene el tema musical con Fade-out.
+   */
+  stopCharacterTheme() {
+    this.themePlayer.stopCharacterTheme();
   }
 
   /**
@@ -78,7 +201,7 @@ class SoundEngine {
       osc.start(now);
       osc.stop(now + 0.05);
     } catch (e) {
-      // Manejo silencioso ante restricciones del navegador
+      // Manejo silencioso
     }
   }
 
@@ -96,7 +219,6 @@ class SoundEngine {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
 
-      // Frecuencia dinámica: de 350Hz hasta 1400Hz conforme sube el número
       const freq = 350 + (progressRatio * 1050);
 
       osc.type = 'triangle';
@@ -124,7 +246,6 @@ class SoundEngine {
 
     try {
       const now = this.ctx.currentTime;
-      // Arpegio armónico rápido: C5, E5, G5, C6 (Do mayor resplandeciente)
       const notas = [523.25, 659.25, 783.99, 1046.50];
 
       notas.forEach((freq, index) => {
@@ -159,7 +280,6 @@ class SoundEngine {
     try {
       const now = this.ctx.currentTime;
 
-      // Oscilador 1: Tono descendente tipo caída de energía
       const osc1 = this.ctx.createOscillator();
       const gain1 = this.ctx.createGain();
 
@@ -170,7 +290,6 @@ class SoundEngine {
       gain1.gain.setValueAtTime(0.22, now);
       gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
 
-      // Filtro Lowpass para suavizar el sonido dramático
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(800, now);
@@ -183,7 +302,6 @@ class SoundEngine {
       osc1.start(now);
       osc1.stop(now + 0.65);
 
-      // Oscilador 2: Sub-bajo de impacto
       const oscSub = this.ctx.createOscillator();
       const gainSub = this.ctx.createGain();
 
@@ -212,7 +330,6 @@ class SoundEngine {
 
     try {
       const now = this.ctx.currentTime;
-      // Secuencia arpegiada rápida y brillante
       const secuencia = [
         { f: 587.33, t: 0 },    // D5
         { f: 739.99, t: 0.07 }, // F#5

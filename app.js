@@ -603,6 +603,10 @@ function aplicarHoverRotacionGifs(contenedor, targetBg, personaje) {
   let currentIndex = 0;
 
   contenedor.addEventListener('mouseenter', () => {
+    if (personaje.audio_theme) {
+      soundEngine.playCharacterTheme(personaje.audio_theme);
+    }
+
     if (gifList.length === 0) return;
 
     currentIndex = 0;
@@ -634,6 +638,8 @@ function aplicarHoverRotacionGifs(contenedor, targetBg, personaje) {
   });
 
   contenedor.addEventListener('mouseleave', () => {
+    soundEngine.stopCharacterTheme();
+
     if (intervalId) {
       clearInterval(intervalId);
       intervalId = null;
@@ -655,6 +661,10 @@ function configurarHoverTarjetasJuego() {
     dom.cardA.addEventListener('mouseenter', () => {
       const personaje = state.characterA;
       if (!personaje) return;
+
+      if (personaje.audio_theme) {
+        soundEngine.playCharacterTheme(personaje.audio_theme);
+      }
 
       const gifList = (Array.isArray(personaje.gifs_hover) && personaje.gifs_hover.length > 0)
         ? personaje.gifs_hover
@@ -691,6 +701,8 @@ function configurarHoverTarjetasJuego() {
     });
 
     dom.cardA.addEventListener('mouseleave', () => {
+      soundEngine.stopCharacterTheme();
+
       if (cardAHoverInterval) {
         clearInterval(cardAHoverInterval);
         cardAHoverInterval = null;
@@ -710,6 +722,10 @@ function configurarHoverTarjetasJuego() {
     dom.cardB.addEventListener('mouseenter', () => {
       const personaje = state.characterB;
       if (!personaje) return;
+
+      if (personaje.audio_theme) {
+        soundEngine.playCharacterTheme(personaje.audio_theme);
+      }
 
       const gifList = (Array.isArray(personaje.gifs_hover) && personaje.gifs_hover.length > 0)
         ? personaje.gifs_hover
@@ -746,6 +762,8 @@ function configurarHoverTarjetasJuego() {
     });
 
     dom.cardB.addEventListener('mouseleave', () => {
+      soundEngine.stopCharacterTheme();
+
       if (cardBHoverInterval) {
         clearInterval(cardBHoverInterval);
         cardBHoverInterval = null;
@@ -766,6 +784,7 @@ function configurarHoverTarjetasJuego() {
  * Detiene y resetea cualquier intervalo de rotación hover activo en las tarjetas del juego.
  */
 function limpiarHoverTarjetasJuego() {
+  soundEngine.stopCharacterTheme();
   if (cardAHoverInterval) {
     clearInterval(cardAHoverInterval);
     cardAHoverInterval = null;
@@ -1874,6 +1893,10 @@ function abrirModalDesglose(personaje) {
 
   registrarConsultaDesglose(personaje.id);
 
+  if (personaje.audio_theme) {
+    soundEngine.playCharacterTheme(personaje.audio_theme);
+  }
+
   dom.modalCharName.textContent = personaje.nombre;
   dom.modalCharOrigin.textContent = personaje.obra;
   dom.modalCharFeat.textContent = personaje.hazana_descripcion || 'Sin registro de hazaña adicional.';
@@ -1926,6 +1949,7 @@ function abrirModalDesglose(personaje) {
 
 function cerrarModalDesglose() {
   soundEngine.playClick();
+  soundEngine.stopCharacterTheme();
   dom.modalBreakdown.classList.add('hidden');
 }
 
