@@ -2334,3 +2334,155 @@ body {
   .header-search-box:focus-within { width: 190px; }
   .scoreboard { display: none; }
 }
+
+/* ==========================================================================
+   Microinteracciones Avanzadas, Audio Toggle y Canvas Card Styles
+   ========================================================================== */
+
+/* Botón Toggle de Audio Táctico Sintético */
+.btn-audio-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  background: rgba(0, 243, 255, 0.1);
+  border: 1px solid rgba(0, 243, 255, 0.4);
+  border-radius: 999px;
+  color: var(--accent-cyan);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.btn-audio-toggle:hover {
+  background: rgba(0, 243, 255, 0.22);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 16px var(--accent-cyan-glow);
+  transform: translateY(-2px);
+}
+
+.btn-audio-toggle.muted {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.btn-audio-toggle.muted:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.audio-toggle-icon {
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-audio-toggle:active .audio-toggle-icon {
+  transform: scale(1.25);
+}
+
+/* Botón Descargar Tarjeta de Batalla (Pick a Fight) */
+.btn-download-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.2) 0%, rgba(255, 120, 0, 0.35) 100%);
+  border: 1.5px solid rgba(255, 200, 0, 0.6);
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 15px rgba(255, 200, 0, 0.25);
+}
+
+.btn-download-card:hover {
+  background: linear-gradient(135deg, rgba(255, 200, 0, 0.35) 0%, rgba(255, 120, 0, 0.55) 100%);
+  border-color: #ffc800;
+  box-shadow: 0 0 22px rgba(255, 200, 0, 0.5);
+  transform: translateY(-2px);
+  color: #fff;
+}
+
+.btn-download-card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-download-card.is-generating {
+  opacity: 0.7;
+  pointer-events: none;
+  filter: grayscale(0.4);
+}
+
+/* Microinteracción: Hover GIF Preview con Transición de Opacidad Suave */
+.dir-avatar-circle {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, opacity 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.character-dir-card:hover .dir-avatar-circle {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px var(--accent-cyan-glow);
+  border-color: #ffffff;
+}
+
+.dir-avatar-circle.gif-cycling,
+.roster-card-bg.gif-cycling,
+.slot-bg.gif-cycling {
+  animation: cyberPulseGlow 0.9s infinite alternate;
+}
+
+.roster-card-bg {
+  transition: transform 0.4s ease, opacity 0.25s ease;
+}
+
+.slot-bg {
+  transition: opacity 0.25s ease;
+}
+
+@keyframes cyberPulseGlow {
+  0% {
+    filter: saturate(1.1) brightness(1);
+  }
+  100% {
+    filter: saturate(1.35) brightness(1.15);
+  }
+}
+
+/* Indicador visual de hover preview */
+.roster-card::after,
+.character-dir-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.character-dir-card::before {
+  border: 1px solid rgba(0, 243, 255, 0.3);
+  box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.08);
+}
+
+.character-dir-card:hover::before {
+  opacity: 1;
+}
+

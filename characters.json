@@ -8,8 +8,13 @@
     "derrotados": ["raditz", "nappa"],
     "imagen": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80",
     "gif_collage": "https://media.giphy.com/media/GRSnxyhJnPsaQ/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/GRSnxyhJnPsaQ/giphy.gif",
+      "https://media.giphy.com/media/cb9aF9tzoRjgQ/giphy.gif",
+      "https://media.giphy.com/media/d5fMI9ftgQiGzoZoB9/giphy.gif"
+    ],
     "hazana_descripcion": "Multiplicó su poder con el Kaiō-ken x4 y repelió el Cañón Galick de Vegeta.",
-    "justificacion_canonica": "Su poder base fue forjado en el entrenamiento bajo gravedad x10 con Kaiō-sama. Al dominar el Kaiō-ken x4 y canalizar la energía residual de la derrota de invasores saiyajin de élite como Raditz y Nappa, alcanza un nivel de amenaza devastador capaz de salvar la Tierra.",
+    "justificacion_canonica": "Entrenamiento bajo gravedad x10 con Kaiō-sama. Domina el Kaiō-ken x4 y canaliza la energía residual de la derrota de Raditz y Nappa.",
     "habilidades": ["Kaiō-ken x4", "Kamehameha", "Genkidama", "Taiyōken"]
   },
   {
@@ -21,8 +26,13 @@
     "derrotados": ["goku_saiyan", "nappa"],
     "imagen": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
     "gif_collage": "https://media.giphy.com/media/qXJq82485U556/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/qXJq82485U556/giphy.gif",
+      "https://media.giphy.com/media/PxnB1fjs9SNri/giphy.gif",
+      "https://media.giphy.com/media/ThA5v44g4gIeY/giphy.gif"
+    ],
     "hazana_descripcion": "Destruyó planetas enteros en su conquista y desató la colosal forma Ōzaru.",
-    "justificacion_canonica": "Príncipe de los Saiyajin con instinto genocida nato. Su score canónico refleja una carrera militar implacable conquistando planetas para Freezer, sumado a la absorción del diferencial de combate de sus subordinados y su aplastante dominación en combate terrestre.",
+    "justificacion_canonica": "Príncipe de los Saiyajin con instinto genocida nato. Su score refleja conquistas planetarias para Freezer y su dominación física terrestre.",
     "habilidades": ["Galick Gun", "Transformación Ōzaru", "Luces de la Muerte", "Explosión Ki"]
   },
   {
@@ -31,11 +41,15 @@
     "obra": "Dragon Ball Z",
     "bajas_directas": 6,
     "bono_hazana": 4000,
-    "derrotados": ["yamcha", "tenshinhan", "chaoz"],
+    "derrotados": ["yamcha", "tenshinhan"],
     "imagen": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80",
     "gif_collage": "https://media.giphy.com/media/bDWdJRY2IZCX6/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/bDWdJRY2IZCX6/giphy.gif",
+      "https://media.giphy.com/media/11oEAqbgvAZIKQ/giphy.gif"
+    ],
     "hazana_descripcion": "Arrasó con la vanguardia de los Guerreros Z sin sufrir daño crítico.",
-    "justificacion_canonica": "General de choque saiyajin de complexión titánica. Su puntaje calcula la aniquilación sistemática de múltiples defensores de élite terrestres y el coeficiente de conquista saiyajin acumulado por décadas de asaltos planetarios.",
+    "justificacion_canonica": "General de choque saiyajin de complexión titánica. Puntaje calculado por la aniquilación sistemática de defensores terrestres de élite.",
     "habilidades": ["Bombardero Volcánico", "Rompedor de Brazos", "Onda Explosiva", "Rayo Bucal Gigante"]
   },
   {
@@ -44,11 +58,15 @@
     "obra": "Dragon Ball Z",
     "bajas_directas": 3,
     "bono_hazana": 1500,
-    "derrotados": ["farmer_with_shotgun"],
+    "derrotados": [],
     "imagen": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80",
     "gif_collage": "https://media.giphy.com/media/vnoZnuh4mM2sM/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/vnoZnuh4mM2sM/giphy.gif",
+      "https://media.giphy.com/media/5Uwhzt95DDPB7bY90N/giphy.gif"
+    ],
     "hazana_descripcion": "Humilló en combate simultáneo a Goku y Piccolo con facilidad abrumadora.",
-    "justificacion_canonica": "Vanguardia de reconocimiento saiyajin con rastreador táctico. Su score sintetiza su superioridad bélica extraterrestre sobre la raza humana, la velocidad sónica de evasión y la letalidad de sus ráfagas dobles de energía.",
+    "justificacion_canonica": "Vanguardia saiyajin que superó la resistencia humana inicial con ráfagas dobles y velocidad supersónica.",
     "habilidades": ["Double Sunday", "Saturday Crush", "Vuelo Supersónico", "Cola Prensil Táctica"]
   },
   {
@@ -60,9 +78,13 @@
     "derrotados": ["yamcha"],
     "imagen": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=800&q=80",
     "gif_collage": "https://media.giphy.com/media/13fTar4VWAuqhG/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/13fTar4VWAuqhG/giphy.gif",
+      "https://media.giphy.com/media/84CRvhy2DJlwA/giphy.gif"
+    ],
     "hazana_descripcion": "Campeón del 22° Torneo de Artes Marciales y creador del destructivo Kikoho.",
-    "justificacion_canonica": "Maestro prodigio de la Escuela Grulla. Su puntuación contempla la maestría marcial mística, victorias competitivas frente a los mayores guerreros del mundo y la capacidad de concentrar su fuerza vital en impactos que superan los límites biológicos.",
-    "habilidades": ["Kikoho (Tri-Beam)", "Dōshin no Jutsu (Multi-brazo)", "Taiyōken", "Dodonpa"]
+    "justificacion_canonica": "Maestro prodigio de la Escuela Grulla capaz de concentrar su fuerza vital en impactos que superan los límites biológicos.",
+    "habilidades": ["Kikoho (Tri-Beam)", "Dōshin no Jutsu", "Taiyōken", "Dodonpa"]
   },
   {
     "id": "yamcha",
@@ -73,8 +95,187 @@
     "derrotados": [],
     "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
     "gif_collage": "https://media.giphy.com/media/UEwgbxjsG3xC0/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/UEwgbxjsG3xC0/giphy.gif",
+      "https://media.giphy.com/media/eJ4j2VnYOZU8qJU3Py/giphy.gif"
+    ],
     "hazana_descripcion": "Bandido legendario del desierto y semifinalista en múltiples torneos mundiales.",
-    "justificacion_canonica": "Guerrero marcial versátil y creador de técnicas de ki guiado. Su score refleja su entrenamiento riguroso bajo la tutela del Maestro Roshi y su dominio del ataque espiritual del lobo salvaje.",
-    "habilidades": ["Rōgafūfūken (Golpe del Lobo)", "Sōkidan (Bola de Ki Teledirigida)", "Kamehameha", "Estilo Colmillo Veloz"]
+    "justificacion_canonica": "Guerrero marcial versátil bajo la tutela de Roshi, creador de la técnica de ki guiado Sōkidan.",
+    "habilidades": ["Rōgafūfūken", "Sōkidan", "Kamehameha", "Estilo Colmillo Veloz"]
+  },
+  {
+    "id": "gojo_satoru",
+    "nombre": "Satoru Gojo",
+    "obra": "Jujutsu Kaisen",
+    "bajas_directas": 1000,
+    "bono_hazana": 22000,
+    "derrotados": ["toji_fushiguro", "sukuna_15f"],
+    "imagen": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/UgV8Y7bDxsZDCP077M/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/UgV8Y7bDxsZDCP077M/giphy.gif",
+      "https://media.giphy.com/media/DGsDLr9nyz2LkVgKFs/giphy.gif",
+      "https://media.giphy.com/media/C5kOH47U24CPkK6uP7/giphy.gif"
+    ],
+    "hazana_descripcion": "Alteró el equilibrio del mundo al nacer y dominó la Expansión de Dominio Vacío Infinito.",
+    "justificacion_canonica": "Poseedor de los Seis Ojos y la técnica de Infinito. Intocable para ataques físicos convencionales y capaz de borrar materia con Púrpura.",
+    "habilidades": ["Vacío Infinito", "Rojo (Repulsión)", "Azul (Atracción)", "Púrpura Hueco"]
+  },
+  {
+    "id": "sukuna_15f",
+    "nombre": "Ryomen Sukuna (15 Dedos)",
+    "obra": "Jujutsu Kaisen",
+    "bajas_directas": 5000,
+    "bono_hazana": 19500,
+    "derrotados": ["jogo", "mahoraga"],
+    "imagen": "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/4lu5FuhtrbaOQgKN57/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/4lu5FuhtrbaOQgKN57/giphy.gif",
+      "https://media.giphy.com/media/Lhy8qPj5rUjY3Pec2j/giphy.gif",
+      "https://media.giphy.com/media/vNYQJpN4KS3Ly/giphy.gif"
+    ],
+    "hazana_descripcion": "Aniquiló el distrito de Shibuya con su Santuario Malévolo y redujo a cenizas a Mahoraga.",
+    "justificacion_canonica": "El Rey de las Maldiciones en la era Heian. Su dominio sin barrera corta todo en un radio de 200 metros con precisión atómica.",
+    "habilidades": ["Santuario Malévolo", "Desmantelar", "Partir", "Flecha de Fuego (Kamado)"]
+  },
+  {
+    "id": "toji_fushiguro",
+    "nombre": "Toji Fushiguro",
+    "obra": "Jujutsu Kaisen",
+    "bajas_directas": 45,
+    "bono_hazana": 5500,
+    "derrotados": ["geto_suguru"],
+    "imagen": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/H55eg5ceSa6Ag/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/H55eg5ceSa6Ag/giphy.gif",
+      "https://media.giphy.com/media/1AR8jI7m2tAC4/giphy.gif"
+    ],
+    "hazana_descripcion": "El Asesino de Hechiceros con Restricción Celestial que llevó al borde de la muerte a Gojo joven.",
+    "justificacion_canonica": "Cero energía maldita compensada con sentidos sobrehumanos absolutos e inmunidad al rastreo de barreras.",
+    "habilidades": ["Restricción Celestial", "Lanza Celestial Invertida", "Nube Errante", "Velocidad Hipersónica"]
+  },
+  {
+    "id": "madara_rikudo",
+    "nombre": "Madara Uchiha (Rikudō)",
+    "obra": "Naruto",
+    "bajas_directas": 10000,
+    "bono_hazana": 25000,
+    "derrotados": ["cinco_kages", "tobirama_senju"],
+    "imagen": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/ad4sL0R20PTbi/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/ad4sL0R20PTbi/giphy.gif",
+      "https://media.giphy.com/media/O9kCzQTSyPcTLlHY2y/giphy.gif",
+      "https://media.giphy.com/media/wJ8QGSXasDvPy/giphy.gif"
+    ],
+    "hazana_descripcion": "Despertó el Rinne Sharingan, absorbió al Diez Colas y proyectó el Tsukuyomi Infinito en la Luna.",
+    "justificacion_canonica": "Jinchūriki del Jūbi con clones Limbo que existen en dimensiones paralelas inaccesibles para ataques ordinarios.",
+    "habilidades": ["Tsukuyomi Infinito", "Limbo: Hengoku", "Gudōdama", "Susanoo Perfecto"]
+  },
+  {
+    "id": "cinco_kages",
+    "nombre": "Alianza Cinco Kages",
+    "obra": "Naruto",
+    "bajas_directas": 200,
+    "bono_hazana": 7000,
+    "derrotados": [],
+    "imagen": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/2y98KScHKeaQM/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/2y98KScHKeaQM/giphy.gif",
+      "https://media.giphy.com/media/k59b5nIje72MM/giphy.gif"
+    ],
+    "hazana_descripcion": "Los cinco líderes supremos de las aldeas ninja coordinando sus mejores jutsus elementales.",
+    "justificacion_canonica": "Representan la cúspide táctica del mundo shinobi regular antes de la escala de dioses Otsutsuki.",
+    "habilidades": ["Jinton (Elemento Polvo)", "Modo Rayo Nivel 2", "Regeneración Mitótica", "Arena de Hierro"]
+  },
+  {
+    "id": "luffy_gear5",
+    "nombre": "Monkey D. Luffy (Gear 5)",
+    "obra": "One Piece",
+    "bajas_directas": 150,
+    "bono_hazana": 16500,
+    "derrotados": ["kaido", "rob_lucci"],
+    "imagen": "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/WmkqburJqXziM/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/WmkqburJqXziM/giphy.gif",
+      "https://media.giphy.com/media/12K8GGWstl229G/giphy.gif",
+      "https://media.giphy.com/media/4N5vB4aErlVtVsybxB/giphy.gif"
+    ],
+    "hazana_descripcion": "Despertó al Dios del Sol Nika, convirtiendo su entorno en caricatura maleable y derrotando a Kaido.",
+    "justificacion_canonica": "Libertad absoluta en combate físico con Haki del Conquistador avanzado que daña internamente sin contacto.",
+    "habilidades": ["Bajrang Gun", "Haki del Conquistador Avanzado", "Deformación de Realidad Toon", "Gatling de Rayos"]
+  },
+  {
+    "id": "kaido",
+    "nombre": "Kaido Rey de las Bestias",
+    "obra": "One Piece",
+    "bajas_directas": 800,
+    "bono_hazana": 15000,
+    "derrotados": ["oden_kozuki", "scabbards"],
+    "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/blas9RgQBAl17C76JN/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/blas9RgQBAl17C76JN/giphy.gif",
+      "https://media.giphy.com/media/S3F8kkUtQDrm8/giphy.gif"
+    ],
+    "hazana_descripcion": "La criatura viva más fuerte, levantó una isla entera por los aires mientras batallaba sin descanso.",
+    "justificacion_canonica": "Piel de dragón impenetrable que requirió golpes de nivel divino para agrietar su resistencia.",
+    "habilidades": ["Boro Breath", "Thunder Bagua", "Dragón Flameante", "Haki Avanzado"]
+  },
+  {
+    "id": "meruem",
+    "nombre": "Meruem (Post-Rosa)",
+    "obra": "Hunter x Hunter",
+    "bajas_directas": 500,
+    "bono_hazana": 9200,
+    "derrotados": ["isaac_netero"],
+    "imagen": "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/tuCFp8sndjfZJUat96/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/tuCFp8sndjfZJUat96/giphy.gif",
+      "https://media.giphy.com/media/bOzHoPN3I6qRXdECpD/giphy.gif"
+    ],
+    "hazana_descripcion": "Sobrevivió a una ojiva nuclear en miniatura y sintetizó el Nen de sus Guardias Reales.",
+    "justificacion_canonica": "Cúspide de la evolución biológica de las Hormigas Quimera con velocidad lumínica táctica gracias a su En de fotones.",
+    "habilidades": ["En de Fotones", "Ráfaga de Furia Desintegradora", "Metamorfosis Alar", "Síntesis de Aura"]
+  },
+  {
+    "id": "isaac_netero",
+    "nombre": "Isaac Netero",
+    "obra": "Hunter x Hunter",
+    "bajas_directas": 80,
+    "bono_hazana": 4200,
+    "derrotados": [],
+    "imagen": "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/U0y1oKffh1i7Y9kL1S/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/U0y1oKffh1i7Y9kL1S/giphy.gif",
+      "https://media.giphy.com/media/13pHvqbNf7jyMw/giphy.gif"
+    ],
+    "hazana_descripcion": "Superó la velocidad del sonido rezando y desató el Guanyin Bodhisattva de 100 tipos.",
+    "justificacion_canonica": "Presidente de la Asociación de Cazadores, maestro marcial absoluto con golpes más rápidos que el pensamiento.",
+    "habilidades": ["Guanyin Bodhisattva de 100 Tipos", "Mano Cero", "Golpe Sónico de Oración", "La Pequeña Rosa"]
+  },
+  {
+    "id": "thanos_gems",
+    "nombre": "Thanos (Guantelete del Infinito)",
+    "obra": "Marvel Comics",
+    "bajas_directas": 50000,
+    "bono_hazana": 30000,
+    "derrotados": ["hulk", "thor", "avengers_vanguard"],
+    "imagen": "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80",
+    "gif_collage": "https://media.giphy.com/media/xUOxeZn4GoPNVRvDJm/giphy.gif",
+    "gifs_hover": [
+      "https://media.giphy.com/media/xUOxeZn4GoPNVRvDJm/giphy.gif",
+      "https://media.giphy.com/media/ie76dJeCrnFBDdMDNAV/giphy.gif",
+      "https://media.giphy.com/media/3oxHQdZSTapV6yta2A/giphy.gif"
+    ],
+    "hazana_descripcion": "Borró la mitad de la vida en el universo conocido con un chasquido del Guantelete.",
+    "justificacion_canonica": "Fisiología de Eterno combinada con el control absoluto del Espacio, Tiempo, Realidad, Poder, Mente y Alma.",
+    "habilidades": ["Chasquido Universal", "Manipulación de Realidad", "Parada Temporal", "Proyección Cósmica"]
   }
 ]

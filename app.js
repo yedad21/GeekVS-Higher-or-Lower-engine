@@ -2,9 +2,16 @@
  * Controlador principal de GeekVS (ES6 Module)
  * Arquitectura SPA: Higher or Lower, Directorio de Personajes, Registro de Universos,
  * Cosmic Tier List, Pick a Fight 1v1, Buscador Global y Panel "Mis Estadísticas".
+ * 
+ * Incorpora:
+ * 1. Microinteracción Hover con Rotación de GIFs (Image Hover Preview con precarga en memoria)
+ * 2. Motor de Audio Sintético Nativo Web Audio API (soundEngine.js)
+ * 3. Generador de Tarjetas de Duelo 1200x630 con Canvas (canvasShare.js)
  */
 
 import { cargarCatalogo, calcularScore, FACTOR_ALPHA } from './powerEngine.js';
+import { soundEngine } from './soundEngine.js';
+import { descargarTarjetaBatalla } from './canvasShare.js';
 
 // 1. Constantes y claves de almacenamiento
 const STORAGE_HIGH_SCORE_KEY = 'geekvs_high_score';
@@ -28,9 +35,10 @@ const TIERS_CONFIG = [
 // Letras del alfabeto para el filtro del directorio
 const ALPHABET_LETTERS = ['ALL', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-// 2. Catálogo y mapa en memoria
+// 2. Catálogo, mapa en memoria y registro de precarga
 let catalogo = [];
 let mapaCatalogo = new Map();
+const imagenesPrecargadas = new Set();
 
 // 3. Mapeo de elementos del DOM
 const dom = {
@@ -53,10 +61,13 @@ const dom = {
   globalSearchResults: document.getElementById('global-search-results'),
   headerSearchContainer: document.getElementById('header-search-container'),
 
-  // Marcadores y botón My Stats
+  // Marcadores, botón My Stats y Toggle de Audio
   currentStreak: document.getElementById('current-streak'),
   highScore: document.getElementById('high-score'),
   btnOpenStats: document.getElementById('btn-open-stats'),
+  btnAudioToggle: document.getElementById('btn-audio-toggle'),
+  audioToggleIcon: document.getElementById('audio-toggle-icon'),
+  audioToggleText: document.getElementById('audio-toggle-text'),
 
   // Drawer My Stats
   drawerMyStats: document.getElementById('drawer-my-stats'),
@@ -163,6 +174,8 @@ const dom = {
 
   btnShareDuel: document.getElementById('btn-share-duel'),
   btnShareText: document.getElementById('btn-share-text'),
+  btnDownloadCard: document.getElementById('btn-download-card'),
+  btnDownloadText: document.getElementById('btn-download-text'),
   btnResetBattle: document.getElementById('btn-reset-battle'),
 
   drawerFighterSelect: document.getElementById('drawer-fighter-select'),
@@ -220,10 +233,102 @@ const state = {
 };
 
 /**
+ * Precarga en memoria de todos los recursos (PNGs y GIFs de hover)
+ * para evitar parpadeos blancos durante la interacción.
+ */
+function precargarRecursosCatalogo() {
+  catalogo.forEach((p) => {
+    const urls = [];
+    if (p.imagen) urls.push(p.imagen);
+    if (p.gif_collage) urls.push(p.gif_collage);
+    if (Array.isArray(p.gifs_hover)) {
+      p.gifs_hover.forEach((url) => urls.push(url));
+    }
+
+    urls.forEach((url) => {
+      if (url && !imagenesPrecargadas.has(url)) {
+        imagenesPrecargadas.add(url);
+        const img = new Image();
+        img.src = url;
+      }
+    });
+  });
+}
+
+/**
+ * Gestor de Microinteracción Hover con Rotación de GIFs (Image Hover Preview).
+ * @param {HTMLElement} contenedor - Elemento que recibe los eventos mouseenter/mouseleave.
+ * @param {HTMLElement} targetBg - Elemento visual cuyo backgroundImage será alternado.
+ * @param {Object} personaje - Datos del personaje.
+ */
+function aplicarHoverRotacionGifs(contenedor, targetBg, personaje) {
+  if (!contenedor || !targetBg || !personaje) return;
+
+  const gifList = (Array.isArray(personaje.gifs_hover) && personaje.gifs_hover.length > 0)
+    ? personaje.gifs_hover
+    : (personaje.gif_collage ? [personaje.gif_collage] : []);
+
+  const staticImg = personaje.imagen || (gifList[0] || '');
+  let intervalId = null;
+  let currentIndex = 0;
+
+  contenedor.addEventListener('mouseenter', () => {
+    if (gifList.length === 0) return;
+
+    currentIndex = 0;
+    targetBg.classList.add('gif-cycling');
+
+    // Transición suave de opacidad al primer GIF
+    targetBg.style.opacity = '0.75';
+    setTimeout(() => {
+      targetBg.style.backgroundImage = `url('${gifList[0]}')`;
+      targetBg.style.opacity = '1';
+    }, 60);
+
+    // Si hay más de un GIF, alternar cada 900ms
+    if (gifList.length > 1) {
+      intervalId = setInterval(() => {
+        currentIndex = (currentIndex + 1) % gifList.length;
+        targetBg.style.opacity = '0.75';
+        setTimeout(() => {
+          targetBg.style.backgroundImage = `url('${gifList[currentIndex]}')`;
+          targetBg.style.opacity = '1';
+        }, 60);
+      }, 900);
+    }
+  });
+
+  contenedor.addEventListener('mouseleave', () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    targetBg.classList.remove('gif-cycling');
+    targetBg.style.opacity = '0.75';
+    setTimeout(() => {
+      targetBg.style.backgroundImage = `url('${staticImg}')`;
+      targetBg.style.opacity = '1';
+    }, 60);
+  });
+}
+
+/**
+ * Actualiza el aspecto visual del botón toggle de audio según soundEngine.
+ */
+function actualizarEstadoAudioUI() {
+  if (!dom.btnAudioToggle) return;
+  const activo = soundEngine.isAudioActive();
+  dom.btnAudioToggle.classList.toggle('muted', !activo);
+  if (dom.audioToggleIcon) dom.audioToggleIcon.textContent = activo ? '🔊' : '🔇';
+  if (dom.audioToggleText) dom.audioToggleText.textContent = activo ? 'Audio: ON' : 'Audio: OFF';
+}
+
+/**
  * Cambia la vista activa de la SPA.
  * @param {string} viewId - ID de la vista ('view-game' | 'view-characters' | 'view-universes' | 'view-tierlist' | 'view-pickfight').
  */
 function cambiarVista(viewId) {
+  soundEngine.playClick();
   state.activeView = viewId;
 
   // Actualizar clases activas en navegación
@@ -364,6 +469,7 @@ function actualizarDrawerEstadisticas() {
 }
 
 function reiniciarEstadisticas() {
+  soundEngine.playClick();
   if (confirm('¿Deseas reiniciar todas tus estadísticas y récords locales de GeekVS?')) {
     localStorage.removeItem(STORAGE_HIGH_SCORE_KEY);
     localStorage.removeItem(STORAGE_TOTAL_GAMES_KEY);
@@ -420,6 +526,7 @@ function ejecutarBusquedaGlobal(texto) {
       `;
 
       item.addEventListener('click', () => {
+        soundEngine.playClick();
         abrirModalDesglose(p);
         dom.globalSearchResults.classList.add('hidden');
         dom.globalSearchInput.value = '';
@@ -471,6 +578,8 @@ function alternarBotones(deshabilitar) {
 function animarConteoPoder(elemento, valorFinal, duracion = ANIMATION_DURATION_MS) {
   return new Promise((resolve) => {
     const inicio = performance.now();
+    let ultimoTickSonido = 0;
+
     function actualizar(tiempoActual) {
       const tiempoTranscurrido = tiempoActual - inicio;
       const progreso = Math.min(tiempoTranscurrido / duracion, 1);
@@ -479,10 +588,17 @@ function animarConteoPoder(elemento, valorFinal, duracion = ANIMATION_DURATION_M
 
       elemento.textContent = formatearPoder(valorActual);
 
+      // Feedback sonoro táctico scouter cada ~65ms
+      if (tiempoActual - ultimoTickSonido > 65 && progreso < 1) {
+        soundEngine.playPowerCount(progreso);
+        ultimoTickSonido = tiempoActual;
+      }
+
       if (progreso < 1) {
         requestAnimationFrame(actualizar);
       } else {
         elemento.textContent = formatearPoder(valorFinal);
+        soundEngine.playPowerCount(1.0);
         resolve();
       }
     }
@@ -492,6 +608,7 @@ function animarConteoPoder(elemento, valorFinal, duracion = ANIMATION_DURATION_M
 
 async function manejarEleccion(esMayor) {
   if (state.isProcessing) return;
+  soundEngine.playClick();
   alternarBotones(true);
 
   dom.guessControls.classList.add('hidden');
@@ -507,12 +624,20 @@ async function manejarEleccion(esMayor) {
   await new Promise((res) => setTimeout(res, ROUND_TRANSITION_DELAY_MS));
 
   if (acerto) {
+    const eraNuevoRecord = state.streak + 1 > state.highScore && state.highScore > 0;
     state.streak += 1;
+
     if (state.streak > state.highScore) {
       state.highScore = state.streak;
       localStorage.setItem(STORAGE_HIGH_SCORE_KEY, state.highScore.toString());
     }
     actualizarMarcadores();
+
+    if (eraNuevoRecord) {
+      soundEngine.playNewRecord();
+    } else {
+      soundEngine.playCorrect();
+    }
 
     state.characterA = state.characterB;
     state.characterB = obtenerPersonajeAleatorio([state.characterA.id]);
@@ -521,6 +646,7 @@ async function manejarEleccion(esMayor) {
     renderizarTarjetaB();
     alternarBotones(false);
   } else {
+    soundEngine.playGameOver();
     ejecutarGameOver();
   }
 }
@@ -551,7 +677,7 @@ export function iniciarPartida() {
 }
 
 // =========================================================================
-// VISTA 2: DIRECTORIO DE PERSONAJES (ALPHABET + GRID)
+// VISTA 2: DIRECTORIO DE PERSONAJES (ALPHABET + GRID + HOVER PREVIEW)
 // =========================================================================
 
 function inicializarBarraAlfabetica() {
@@ -563,6 +689,7 @@ function inicializarBarraAlfabetica() {
     btn.className = `alphabet-btn ${letra === state.directory.letter ? 'active' : ''}`;
     btn.textContent = letra;
     btn.addEventListener('click', () => {
+      soundEngine.playClick();
       state.directory.letter = letra;
       document.querySelectorAll('.alphabet-btn').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
@@ -606,7 +733,8 @@ function renderizarDirectorioPersonajes() {
     const card = document.createElement('div');
     card.className = 'character-dir-card';
 
-    const avatarUrl = personaje.gif_collage || personaje.imagen;
+    // Imagen estática inicial
+    const avatarUrl = personaje.imagen || (personaje.gif_collage || '');
 
     card.innerHTML = `
       <div class="dir-avatar-circle" style="background-image: url('${avatarUrl}')"></div>
@@ -621,12 +749,20 @@ function renderizarDirectorioPersonajes() {
       <button class="btn-dir-breakdown" aria-label="Ver desglose canónico de ${personaje.nombre}">ℹ️ Desglose</button>
     `;
 
+    // Conectar microinteracción de rotación de GIFs en hover
+    const avatarEl = card.querySelector('.dir-avatar-circle');
+    aplicarHoverRotacionGifs(card, avatarEl, personaje);
+
     card.querySelector('.btn-dir-breakdown').addEventListener('click', (e) => {
       e.stopPropagation();
+      soundEngine.playClick();
       abrirModalDesglose(personaje);
     });
 
-    card.addEventListener('click', () => abrirModalDesglose(personaje));
+    card.addEventListener('click', () => {
+      soundEngine.playClick();
+      abrirModalDesglose(personaje);
+    });
 
     dom.charactersDirectoryGrid.appendChild(card);
   });
@@ -676,7 +812,7 @@ function renderizarUniversos() {
     const card = document.createElement('div');
     card.className = 'universe-card';
 
-    const topAvatar = u.topFighter ? (u.topFighter.gif_collage || u.topFighter.imagen) : '';
+    const topAvatar = u.topFighter ? (u.topFighter.imagen || u.topFighter.gif_collage) : '';
 
     card.innerHTML = `
       <div class="universe-card-header">
@@ -704,8 +840,12 @@ function renderizarUniversos() {
       </div>
     `;
 
+    if (u.topFighter) {
+      aplicarHoverRotacionGifs(card, card.querySelector('.top-fighter-avatar'), u.topFighter);
+    }
+
     card.addEventListener('click', () => {
-      // Filtrar y redirigir al directorio de personajes de este universo
+      soundEngine.playClick();
       dom.selectDirectoryUniverse.value = u.nombre;
       state.directory.letter = 'ALL';
       cambiarVista('view-characters');
@@ -716,7 +856,7 @@ function renderizarUniversos() {
 }
 
 // =========================================================================
-// VISTA 4: TIER LIST LOGIC
+// VISTA 4: TIER LIST LOGIC & HOVER PREVIEW
 // =========================================================================
 
 function renderizarTierList() {
@@ -763,7 +903,7 @@ function renderizarTierList() {
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
         
-        const avatarUrl = personaje.gif_collage || personaje.imagen;
+        const avatarUrl = personaje.imagen || (personaje.gif_collage || '');
 
         card.innerHTML = `
           <div class="roster-card-bg" style="background-image: url('${avatarUrl}')"></div>
@@ -776,7 +916,15 @@ function renderizarTierList() {
           <span class="roster-card-inspect-hint">⚡ Desglose</span>
         `;
 
-        card.addEventListener('click', () => abrirModalDesglose(personaje));
+        // Conectar microinteracción hover GIF
+        const bgEl = card.querySelector('.roster-card-bg');
+        aplicarHoverRotacionGifs(card, bgEl, personaje);
+
+        card.addEventListener('click', () => {
+          soundEngine.playClick();
+          abrirModalDesglose(personaje);
+        });
+
         gridEl.appendChild(card);
       });
     } else {
@@ -797,6 +945,7 @@ function renderizarTierList() {
 // =========================================================================
 
 function abrirSelectorPeleador(slot) {
+  soundEngine.playClick();
   state.pickFight.targetSlot = slot;
   dom.fighterSelectSlotBadge.textContent = slot === 'p1' ? 'SELECCIÓN JUGADOR 1 (P1)' : 'SELECCIÓN JUGADOR 2 (P2)';
   dom.fighterSelectSlotBadge.style.color = slot === 'p1' ? 'var(--accent-cyan)' : 'var(--accent-magenta)';
@@ -807,6 +956,7 @@ function abrirSelectorPeleador(slot) {
 }
 
 function cerrarSelectorPeleador() {
+  soundEngine.playClick();
   dom.drawerFighterSelect.classList.add('hidden');
 }
 
@@ -842,7 +992,7 @@ function renderizarSelectorPeleadores() {
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
     
-    const avatarUrl = personaje.gif_collage || personaje.imagen;
+    const avatarUrl = personaje.imagen || (personaje.gif_collage || '');
 
     card.innerHTML = `
       <div class="roster-card-bg" style="background-image: url('${avatarUrl}')"></div>
@@ -855,7 +1005,12 @@ function renderizarSelectorPeleadores() {
       <span class="roster-card-inspect-hint">✓ Elegir</span>
     `;
 
+    // Conectar microinteracción hover GIF
+    const bgEl = card.querySelector('.roster-card-bg');
+    aplicarHoverRotacionGifs(card, bgEl, personaje);
+
     card.addEventListener('click', () => {
+      soundEngine.playClick();
       asignarPeleador(state.pickFight.targetSlot, personaje);
       cerrarSelectorPeleador();
     });
@@ -876,6 +1031,7 @@ function asignarPeleador(slot, personaje) {
     dom.slotP1Origin.textContent = personaje.obra;
     dom.slotP1Power.textContent = formatearPoder(personaje.scoreFinal);
     actualizarFondoFluido(dom.slotP1Bg, personaje);
+    aplicarHoverRotacionGifs(dom.slotP1Selected, dom.slotP1Bg, personaje);
   } else if (slot === 'p2') {
     dom.slotP2Empty.classList.add('hidden');
     dom.slotP2Selected.classList.remove('hidden');
@@ -883,6 +1039,7 @@ function asignarPeleador(slot, personaje) {
     dom.slotP2Origin.textContent = personaje.obra;
     dom.slotP2Power.textContent = formatearPoder(personaje.scoreFinal);
     actualizarFondoFluido(dom.slotP2Bg, personaje);
+    aplicarHoverRotacionGifs(dom.slotP2Selected, dom.slotP2Bg, personaje);
   }
 
   dom.battleResultsPanel.classList.add('hidden');
@@ -904,6 +1061,7 @@ async function ejecutarCalculoCombate() {
   const p2 = state.pickFight.p2;
   if (!p1 || !p2) return;
 
+  soundEngine.playBattleSim();
   registrarDueloSimulado();
 
   const score1 = p1.scoreFinal;
@@ -981,12 +1139,14 @@ async function ejecutarCalculoCombate() {
   setTimeout(() => {
     dom.barP1.style.width = `${pct1}%`;
     dom.barP2.style.width = `${pct2}%`;
+    soundEngine.playCorrect();
   }, 100);
 
   dom.battleResultsPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 async function copiarEnlaceDuelo() {
+  soundEngine.playClick();
   const urlActual = window.location.href;
   try {
     await navigator.clipboard.writeText(urlActual);
@@ -999,7 +1159,37 @@ async function copiarEnlaceDuelo() {
   }
 }
 
+async function manejarDescargaTarjetaBatalla() {
+  const p1 = state.pickFight.p1;
+  const p2 = state.pickFight.p2;
+  if (!p1 || !p2) return;
+
+  soundEngine.playClick();
+
+  if (dom.btnDownloadCard) dom.btnDownloadCard.classList.add('is-generating');
+  if (dom.btnDownloadText) dom.btnDownloadText.textContent = 'Generando Tarjeta 1200x630...';
+
+  try {
+    const winnerName = dom.winnerCharName.textContent || (p1.scoreFinal >= p2.scoreFinal ? p1.nombre : p2.nombre);
+    const marginText = dom.winnerMarginBadge.textContent || '';
+
+    await descargarTarjetaBatalla(p1, p2, winnerName, marginText);
+
+    soundEngine.playNewRecord();
+    if (dom.btnDownloadText) dom.btnDownloadText.textContent = '¡Descarga Completa! ✓';
+  } catch (err) {
+    console.error('[GeekVS] Error exportando tarjeta:', err);
+    if (dom.btnDownloadText) dom.btnDownloadText.textContent = 'Error al exportar';
+  } finally {
+    setTimeout(() => {
+      if (dom.btnDownloadCard) dom.btnDownloadCard.classList.remove('is-generating');
+      if (dom.btnDownloadText) dom.btnDownloadText.textContent = 'Descargar Tarjeta de Batalla';
+    }, 2500);
+  }
+}
+
 function reiniciarArenaDuelos() {
+  soundEngine.playClick();
   state.pickFight.p1 = null;
   state.pickFight.p2 = null;
   dom.slotP1Selected.classList.add('hidden');
@@ -1072,6 +1262,7 @@ function abrirModalDesglose(personaje) {
 }
 
 function cerrarModalDesglose() {
+  soundEngine.playClick();
   dom.modalBreakdown.classList.add('hidden');
 }
 
@@ -1118,6 +1309,8 @@ async function inicializarApp() {
     catalogo = await cargarCatalogo('./characters.json');
     mapaCatalogo = new Map(catalogo.map((p) => [p.id, p]));
     
+    precargarRecursosCatalogo();
+    actualizarEstadoAudioUI();
     poblarTodosLosFiltrosUniversos();
     inicializarBarraAlfabetica();
     iniciarPartida();
@@ -1127,7 +1320,23 @@ async function inicializarApp() {
   }
 }
 
+// Desbloquear AudioContext en la primera interacción del usuario
+function desbloquearAudioEnInteraccion() {
+  soundEngine.initContext();
+}
+window.addEventListener('click', desbloquearAudioEnInteraccion, { once: true });
+window.addEventListener('keydown', desbloquearAudioEnInteraccion, { once: true });
+window.addEventListener('touchstart', desbloquearAudioEnInteraccion, { once: true });
+
 // 5. Asignación de Event Listeners
+
+// Toggle de Audio Táctico
+if (dom.btnAudioToggle) {
+  dom.btnAudioToggle.addEventListener('click', () => {
+    soundEngine.toggleAudio();
+    actualizarEstadoAudioUI();
+  });
+}
 
 // Navegación SPA
 dom.navBtnGame.addEventListener('click', () => cambiarVista('view-game'));
@@ -1144,6 +1353,7 @@ dom.globalSearchInput.addEventListener('input', (e) => {
 });
 
 dom.btnClearGlobalSearch.addEventListener('click', () => {
+  soundEngine.playClick();
   dom.globalSearchInput.value = '';
   dom.btnClearGlobalSearch.classList.add('hidden');
   dom.globalSearchResults.classList.add('hidden');
@@ -1158,16 +1368,21 @@ document.addEventListener('click', (e) => {
 
 // Drawer My Stats
 dom.btnOpenStats.addEventListener('click', () => {
+  soundEngine.playClick();
   actualizarDrawerEstadisticas();
   dom.drawerMyStats.classList.remove('hidden');
 });
 
 dom.btnCloseStats.addEventListener('click', () => {
+  soundEngine.playClick();
   dom.drawerMyStats.classList.add('hidden');
 });
 
 dom.drawerMyStats.addEventListener('click', (e) => {
-  if (e.target === dom.drawerMyStats) dom.drawerMyStats.classList.add('hidden');
+  if (e.target === dom.drawerMyStats) {
+    soundEngine.playClick();
+    dom.drawerMyStats.classList.add('hidden');
+  }
 });
 
 dom.btnClearStats.addEventListener('click', reiniciarEstadisticas);
@@ -1175,14 +1390,19 @@ dom.btnClearStats.addEventListener('click', reiniciarEstadisticas);
 // Higher or Lower
 dom.btnHigher.addEventListener('click', () => manejarEleccion(true));
 dom.btnLower.addEventListener('click', () => manejarEleccion(false));
-dom.btnRestart.addEventListener('click', () => iniciarPartida());
+dom.btnRestart.addEventListener('click', () => {
+  soundEngine.playClick();
+  iniciarPartida();
+});
 
 dom.btnBreakdownA.addEventListener('click', (e) => {
   e.stopPropagation();
+  soundEngine.playClick();
   abrirModalDesglose(state.characterA);
 });
 dom.btnBreakdownB.addEventListener('click', (e) => {
   e.stopPropagation();
+  soundEngine.playClick();
   abrirModalDesglose(state.characterB);
 });
 
@@ -1193,12 +1413,16 @@ dom.inputDirectorySearch.addEventListener('input', (e) => {
 });
 
 dom.btnClearDirectorySearch.addEventListener('click', () => {
+  soundEngine.playClick();
   dom.inputDirectorySearch.value = '';
   dom.btnClearDirectorySearch.classList.add('hidden');
   renderizarDirectorioPersonajes();
 });
 
-dom.selectDirectoryUniverse.addEventListener('change', renderizarDirectorioPersonajes);
+dom.selectDirectoryUniverse.addEventListener('change', () => {
+  soundEngine.playClick();
+  renderizarDirectorioPersonajes();
+});
 
 // Tier List
 dom.inputSearchCharacter.addEventListener('input', (e) => {
@@ -1207,12 +1431,16 @@ dom.inputSearchCharacter.addEventListener('input', (e) => {
 });
 
 dom.btnClearSearch.addEventListener('click', () => {
+  soundEngine.playClick();
   dom.inputSearchCharacter.value = '';
   dom.btnClearSearch.classList.add('hidden');
   renderizarTierList();
 });
 
-dom.selectUniverseFilter.addEventListener('change', renderizarTierList);
+dom.selectUniverseFilter.addEventListener('change', () => {
+  soundEngine.playClick();
+  renderizarTierList();
+});
 
 // Pick a Fight
 dom.btnSelectP1.addEventListener('click', () => abrirSelectorPeleador('p1'));
@@ -1222,10 +1450,12 @@ dom.btnChangeP2.addEventListener('click', () => abrirSelectorPeleador('p2'));
 
 dom.btnBreakdownP1.addEventListener('click', (e) => {
   e.stopPropagation();
+  soundEngine.playClick();
   abrirModalDesglose(state.pickFight.p1);
 });
 dom.btnBreakdownP2.addEventListener('click', (e) => {
   e.stopPropagation();
+  soundEngine.playClick();
   abrirModalDesglose(state.pickFight.p2);
 });
 
@@ -1235,14 +1465,21 @@ dom.inputSearchFighter.addEventListener('input', (e) => {
   renderizarSelectorPeleadores();
 });
 dom.btnClearSearchFighter.addEventListener('click', () => {
+  soundEngine.playClick();
   dom.inputSearchFighter.value = '';
   dom.btnClearSearchFighter.classList.add('hidden');
   renderizarSelectorPeleadores();
 });
-dom.selectUniverseFighter.addEventListener('change', renderizarSelectorPeleadores);
+dom.selectUniverseFighter.addEventListener('change', () => {
+  soundEngine.playClick();
+  renderizarSelectorPeleadores();
+});
 
 dom.btnRunBattle.addEventListener('click', ejecutarCalculoCombate);
 dom.btnShareDuel.addEventListener('click', copiarEnlaceDuelo);
+if (dom.btnDownloadCard) {
+  dom.btnDownloadCard.addEventListener('click', manejarDescargaTarjetaBatalla);
+}
 dom.btnResetBattle.addEventListener('click', reiniciarArenaDuelos);
 
 // Modal Breakdown
